@@ -7,7 +7,7 @@ Projeto para finalização do curso de DDD, das disciplinas de DDD, Docker e Arq
 - [Installation](#installation)
 - [Usage](#usage)
 - [Design](#contributing)
-- [License](#license)
+- [Deliverables](#license)
 
 ## Installation
 
@@ -30,4 +30,4 @@ Toda a estrutura das pastas estão seguindo o exemplo em TS que o professor disp
 
 a. arquitetura hexagonal
 b. api 
-    1. Cadastro do cliente
+    1. Cadastro do cliente (customer)
