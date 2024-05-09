@@ -31,3 +31,5 @@ Toda a estrutura das pastas estão seguindo o exemplo em TS que o professor disp
 a. arquitetura hexagonal
 b. api 
     1. Cadastro do cliente (customer)
+        identificação do cliente
+        registro do cliente

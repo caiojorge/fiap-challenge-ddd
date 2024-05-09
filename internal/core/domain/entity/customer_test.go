@@ -72,3 +72,30 @@ func TestIsValidEmail(t *testing.T) {
 	assert.False(t, isValidateEmail("email@com"))
 
 }
+
+func TestIdentifyCustomer(t *testing.T) {
+
+	cpf, err := valueobject.NewCPF("123.456.789-09")
+	assert.Nil(t, err)
+	assert.NotNil(t, cpf)
+
+	customer := IdentifyCustomer(*cpf)
+	assert.Nil(t, err)
+	assert.NotNil(t, customer)
+
+}
+
+func TestRegisterCustomer(t *testing.T) {
+
+	cpf, err := valueobject.NewCPF("123.456.789-09")
+	assert.Nil(t, err)
+	assert.NotNil(t, cpf)
+
+	customer := IdentifyCustomer(*cpf)
+	assert.Nil(t, err)
+	assert.NotNil(t, customer)
+
+	err = customer.RegisterCustomer("John Doe", "email@email.com")
+	assert.Nil(t, err)
+
+}

@@ -13,6 +13,25 @@ type Customer struct {
 	Email string
 }
 
+func IdentifyCustomer(cpf valueobject.CPF) *Customer {
+	return &Customer{
+		CPF: cpf,
+	}
+}
+
+func (c *Customer) RegisterCustomer(name, email string) error {
+	c.Name = name
+	c.Email = email
+
+	// Validate customer
+	err := c.Validate()
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func NewCustomer(cpf valueobject.CPF, name, email string) (*Customer, error) {
 
 	customer := &Customer{
