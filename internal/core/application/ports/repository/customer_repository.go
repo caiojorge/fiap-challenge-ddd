@@ -8,12 +8,8 @@ import (
 
 // CustomerRepository defines the methods for interacting with the customer data.
 type CustomerRepository interface {
-	// CreateCustomer creates a new customer.
-	CreateCustomer(ctx context.Context, customer *entity.Customer) error
-
-	// GetCustomerByID retrieves a customer by ID.
-	GetCustomerByID(ctx context.Context, id string) (*entity.Customer, error)
-
-	// ListCustomers retrieves a list of customers.
-	ListCustomers(ctx context.Context) ([]*entity.Customer, error)
+	Create(ctx context.Context, customer *entity.Customer) error
+	Update(ctx context.Context, customer *entity.Customer) error
+	Find(ctx context.Context, id string) (*entity.Customer, error)
+	FindAll(ctx context.Context) ([]*entity.Customer, error)
 }

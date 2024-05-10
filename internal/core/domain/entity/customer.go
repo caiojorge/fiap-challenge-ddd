@@ -2,23 +2,27 @@ package entity
 
 import (
 	"errors"
-	"regexp"
 
 	"github.com/caiojorge/fiap-challenge-ddd/internal/core/domain/valueobject"
+	"github.com/caiojorge/fiap-challenge-ddd/internal/shared/validator"
 )
 
+// Customer representa a entidade Cliente
 type Customer struct {
 	CPF   valueobject.CPF
 	Name  string
 	Email string
 }
 
+// TDOD: melhorar esse conceito. Não esta legal ainda
+// IdentifyCustomer identifica um cliente pelo CPF; na verdade, cria pelo CPF
 func IdentifyCustomer(cpf valueobject.CPF) *Customer {
 	return &Customer{
 		CPF: cpf,
 	}
 }
 
+// RegisterCustomer caso o cliente queira se registrar, informando os atributos um a um
 func (c *Customer) RegisterCustomer(name, email string) error {
 	c.Name = name
 	c.Email = email
@@ -32,6 +36,7 @@ func (c *Customer) RegisterCustomer(name, email string) error {
 	return nil
 }
 
+// NewCustomer caso o cliente queira se registrar, informando todo os atributos ao mesmo tempo
 func NewCustomer(cpf valueobject.CPF, name, email string) (*Customer, error) {
 
 	customer := &Customer{
@@ -49,8 +54,8 @@ func NewCustomer(cpf valueobject.CPF, name, email string) (*Customer, error) {
 	return customer, nil
 }
 
-func (c *Customer) GetCPF() valueobject.CPF {
-	return c.CPF
+func (c *Customer) GetCPF() *valueobject.CPF {
+	return &c.CPF
 }
 
 func (c *Customer) GetName() string {
@@ -61,6 +66,7 @@ func (c *Customer) GetEmail() string {
 	return c.Email
 }
 
+// Validate valida todos os campos do cliente
 func (c *Customer) Validate() error {
 
 	if c.CPF.GetValue() == "" {
@@ -78,7 +84,9 @@ func (c *Customer) Validate() error {
 	return nil
 }
 
+// isValidateEmail valida o formato do string enviado no padrão email
 func isValidateEmail(email string) bool {
-	regex := regexp.MustCompile(`^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$`)
-	return regex.MatchString(email)
+	v := validator.EmailValidator{}
+	return v.IsValid(email)
+
 }
