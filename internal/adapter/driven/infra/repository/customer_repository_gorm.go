@@ -2,6 +2,7 @@ package repository_gorm
 
 import (
 	"context"
+	"errors"
 
 	"github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driver/api/converter"
 	"github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driver/api/model"
@@ -30,8 +31,19 @@ func (r *CustomerRepositoryGorm) Update(ctx context.Context, entity *entity.Cust
 }
 
 func (r *CustomerRepositoryGorm) Find(ctx context.Context, id string) (*entity.Customer, error) {
-	// Implementação do método Find
-	return &entity.Customer{}, nil // Substitua por lógica real
+	var customerModel model.Customer
+
+	result := r.DB.Model(&model.Customer{}).Where("cpf = ?", id).First(&customerModel)
+	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return nil, result.Error
+		}
+		return nil, result.Error
+	}
+
+	entity := converter.ToEntity(&customerModel)
+
+	return entity, nil
 }
 
 func (r *CustomerRepositoryGorm) FindAll(ctx context.Context) ([]*entity.Customer, error) {
