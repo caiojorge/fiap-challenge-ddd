@@ -28,6 +28,15 @@ func (r *RegisterCustomerController) PostRegisterCustomer(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid data"})
 		return
 	}
+
+	entity, err := dto.ToEntity()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid data"})
+		return
+	}
+
+	r.usecase.RegisterCustomer(r.ctx, *entity)
+
 	// Use the user object, e.g., save to database, etc.
 	c.JSON(http.StatusOK, gin.H{"status": "customer created " + dto.Name})
 }

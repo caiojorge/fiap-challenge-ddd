@@ -1,22 +1,30 @@
 package controller
 
 import (
+	"context"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
+	portsrepository "github.com/caiojorge/fiap-challenge-ddd/internal/core/application/ports/repository"
+	"github.com/caiojorge/fiap-challenge-ddd/internal/core/domain/entity"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 )
 
 // TestGetCustomerByCPF tests the GetCustomerByCPF handler for both valid and invalid requests.
 func TestGetCustomerByCPF(t *testing.T) {
+	repo := NewMockCustomerRepository()
+	mock := NewMockRegisterCustomerUseCase(repo)
+
+	controller := NewFindCustomerByCPFController(context.Background(), mock)
+
 	// Set up the Gin router
 	gin.SetMode(gin.TestMode)
 	r := gin.Default()
 
 	// Register the handler
-	r.GET("/customer", GetCustomerByCPF)
+	r.GET("/customer", controller.GetCustomerByCPF)
 
 	// Create a test table
 	tests := []struct {
@@ -61,4 +69,18 @@ func TestGetCustomerByCPF(t *testing.T) {
 			assert.JSONEq(t, tc.expectedBody, resp.Body.String())
 		})
 	}
+}
+
+type MockFindByCPFCustomerUseCase struct {
+	repository portsrepository.CustomerRepository
+}
+
+func NewMockFindByCPFCustomerUseCase(repository portsrepository.CustomerRepository) *MockFindByCPFCustomerUseCase {
+	return &MockFindByCPFCustomerUseCase{
+		repository: repository,
+	}
+}
+
+func (m *MockRegisterCustomerUseCase) FindCustomerByCPF(ctx context.Context, cpf string) (*entity.Customer, error) {
+	return &entity.Customer{}, nil
 }

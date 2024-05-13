@@ -4,5 +4,5 @@ test:
 tidy:
 	go mod tidy	
 	
-start:
+run:
 	go run cmd/kitchencontrol/main.go	

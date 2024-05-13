@@ -70,6 +70,14 @@ func TestCustomerRegister(t *testing.T) {
 	assert.NotNil(t, customers)
 	assert.Len(t, customers, 1)
 
+	all := NewCustomerFindAll(repo)
+	assert.NotNil(t, all)
+
+	customers2, err := all.FindAllCustomers(context.Background())
+	assert.Nil(t, err)
+	assert.NotNil(t, customers2)
+	assert.Len(t, customers2, 1)
+
 }
 
 type MockCustomerRepository struct {

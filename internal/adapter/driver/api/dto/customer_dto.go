@@ -1,7 +1,27 @@
 package dto
 
+import (
+	"github.com/caiojorge/fiap-challenge-ddd/internal/core/domain/entity"
+	"github.com/caiojorge/fiap-challenge-ddd/internal/core/domain/valueobject"
+)
+
 type CustomerDTO struct {
 	CPF   string `json:"cpf"`
 	Name  string `json:"name"`
 	Email string `json:"email"`
+}
+
+func (c *CustomerDTO) ToEntity() (*entity.Customer, error) {
+	cpf, err := valueobject.NewCPF(c.CPF)
+	if err != nil {
+		return nil, err
+	}
+
+	customer := entity.Customer{
+		CPF:   *cpf,
+		Name:  c.Name,
+		Email: c.Email,
+	}
+
+	return &customer, nil
 }
