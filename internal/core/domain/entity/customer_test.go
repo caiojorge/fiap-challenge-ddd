@@ -79,7 +79,7 @@ func TestIdentifyCustomer(t *testing.T) {
 	assert.Nil(t, err)
 	assert.NotNil(t, cpf)
 
-	customer := IdentifyCustomer(*cpf)
+	customer, err := IdentifyCustomer(cpf)
 	assert.Nil(t, err)
 	assert.NotNil(t, customer)
 
@@ -91,11 +91,24 @@ func TestRegisterCustomer(t *testing.T) {
 	assert.Nil(t, err)
 	assert.NotNil(t, cpf)
 
-	customer := IdentifyCustomer(*cpf)
+	customer, err := IdentifyCustomer(cpf)
 	assert.Nil(t, err)
 	assert.NotNil(t, customer)
 
 	err = customer.RegisterCustomer("John Doe", "email@email.com")
 	assert.Nil(t, err)
+
+}
+
+// test invalid cpf
+func TestRegisterCustomerInvalidCPF(t *testing.T) {
+
+	cpf, err := valueobject.NewCPF("")
+	assert.NotNil(t, err)
+	assert.Nil(t, cpf)
+
+	customer, err := IdentifyCustomer(cpf)
+	assert.NotNil(t, err)
+	assert.Nil(t, customer)
 
 }

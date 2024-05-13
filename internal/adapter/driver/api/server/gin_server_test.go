@@ -15,7 +15,7 @@ func mockControllerGetCustomerByCPF(c *gin.Context) {
 }
 
 // Setup the server and define URLs with mock controller
-func setupTestServer() *Server {
+func setupTestServer() *GinServer {
 	gin.SetMode(gin.TestMode)
 	server := NewServer()
 	server.router.GET("/customer", mockControllerGetCustomerByCPF)

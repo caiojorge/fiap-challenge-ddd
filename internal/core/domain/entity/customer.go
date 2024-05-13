@@ -16,10 +16,19 @@ type Customer struct {
 
 // TDOD: melhorar esse conceito. Não esta legal ainda
 // IdentifyCustomer identifica um cliente pelo CPF; na verdade, cria pelo CPF
-func IdentifyCustomer(cpf valueobject.CPF) *Customer {
-	return &Customer{
-		CPF: cpf,
+func IdentifyCustomer(cpf *valueobject.CPF) (*Customer, error) {
+	if cpf == nil {
+		return nil, errors.New("CPF is required")
+
 	}
+
+	if cpf.GetValue() == "" {
+		return nil, errors.New("CPF is required")
+	}
+
+	return &Customer{
+		CPF: *cpf,
+	}, nil
 }
 
 // RegisterCustomer caso o cliente queira se registrar, informando os atributos um a um
