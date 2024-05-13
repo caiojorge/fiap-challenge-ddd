@@ -1,11 +1,11 @@
-package repository_gorm
+package repositorygorm
 
 import (
 	"context"
 	"errors"
 
-	"github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driver/api/converter"
-	"github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driver/api/model"
+	"github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driven/converter"
+	"github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driven/model"
 	"github.com/caiojorge/fiap-challenge-ddd/internal/core/domain/entity"
 	"gorm.io/gorm"
 )
@@ -26,8 +26,13 @@ func (r *CustomerRepositoryGorm) Create(ctx context.Context, entity *entity.Cust
 }
 
 func (r *CustomerRepositoryGorm) Update(ctx context.Context, entity *entity.Customer) error {
-	// Implementação do método Update
-	return nil // Substitua por lógica real
+
+	result := r.DB.Model(&model.Customer{}).Where("cpf = ?", entity.GetCPF().Value).Updates(model.Customer{Name: entity.GetName(), Email: entity.GetEmail()})
+	if result.Error != nil {
+		return result.Error
+	}
+
+	return nil
 }
 
 func (r *CustomerRepositoryGorm) Find(ctx context.Context, id string) (*entity.Customer, error) {

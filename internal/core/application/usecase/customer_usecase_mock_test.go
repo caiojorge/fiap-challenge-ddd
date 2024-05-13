@@ -12,6 +12,35 @@ import (
 	_ "github.com/stretchr/testify/assert"
 )
 
+func TestCustomerFindByCPF(t *testing.T) {
+	cpf, err := valueobject.NewCPF("123.456.789-09")
+	assert.Nil(t, err)
+	assert.NotNil(t, cpf)
+
+	customer, err := entity.NewCustomer(*cpf, "John Doe", "email@email.com")
+	assert.Nil(t, err)
+	assert.NotNil(t, customer)
+
+	repo := NewMockCustomerRepository()
+	assert.NotNil(t, repo)
+
+	finder := NewCustomerFindByCPF(repo)
+	assert.NotNil(t, finder)
+
+	err = repo.Create(context.Background(), customer)
+	assert.Nil(t, err)
+
+	customer2, err := finder.FindCustomerByCPF(context.Background(), "123.456.789-09")
+	assert.Nil(t, err)
+	assert.NotNil(t, customer2)
+	assert.Equal(t, customer, customer2)
+
+	customer3, err := finder.FindCustomerByCPF(context.Background(), "123.456.789-10")
+	assert.NotNil(t, err)
+	assert.Nil(t, customer3)
+
+}
+
 func TestCustomerRegister(t *testing.T) {
 
 	cpf, err := valueobject.NewCPF("123.456.789-09")
@@ -24,9 +53,6 @@ func TestCustomerRegister(t *testing.T) {
 
 	repo := NewMockCustomerRepository()
 	assert.NotNil(t, repo)
-
-	customerRegister := NewCustomerRegister(repo)
-	assert.NotNil(t, customerRegister)
 
 	register := NewCustomerRegister(repo)
 	assert.NotNil(t, register)

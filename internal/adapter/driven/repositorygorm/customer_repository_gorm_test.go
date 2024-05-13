@@ -1,11 +1,12 @@
-package repository_gorm
+package repositorygorm
 
 import (
 	"context"
 	"testing"
 	"time"
 
-	"github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driver/api/model"
+	"github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driven/model"
+
 	"github.com/caiojorge/fiap-challenge-ddd/internal/core/domain/entity"
 	"github.com/caiojorge/fiap-challenge-ddd/internal/core/domain/valueobject"
 	"github.com/stretchr/testify/assert"
@@ -47,4 +48,13 @@ func TestNewCustomer(t *testing.T) {
 	assert.Nil(t, err)
 	assert.NotNil(t, customer2)
 	assert.Equal(t, customer, customer2)
+
+	customer.Name = "John Doe 2"
+	err = repo.Update(ctx, customer)
+	assert.Nil(t, err)
+
+	customer3, err := repo.Find(ctx, "123.456.789-09")
+	assert.Nil(t, err)
+	assert.NotNil(t, customer3)
+	assert.Equal(t, customer.Name, customer3.GetName())
 }
