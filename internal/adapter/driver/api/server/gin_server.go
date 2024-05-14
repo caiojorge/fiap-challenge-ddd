@@ -5,12 +5,11 @@ import (
 	"log"
 	"time"
 
-	"github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driven/model"
 	"github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driven/repositorygorm"
 	"github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driver/api/controller"
+	"github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driver/api/infra"
 	"github.com/caiojorge/fiap-challenge-ddd/internal/core/application/usecase"
 	"github.com/gin-gonic/gin"
-	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
 
@@ -25,8 +24,11 @@ func NewServer() *GinServer {
 
 func (s *GinServer) Initialization() *GinServer {
 
+	//db := setupSQLite()
 	db := setupDB()
-	ctx := setupContext()
+
+	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
+	defer cancel()
 
 	g := s.router.Group("kitchencontrol/api/v1")
 
@@ -41,29 +43,34 @@ func setupCustomerRoutes(ctx context.Context, db *gorm.DB, g *gin.RouterGroup) {
 	uc := usecase.NewCustomerRegister(repo)
 	registerController := controller.NewRegisterCustomerController(ctx, uc)
 	g.POST("/customers", registerController.PostRegisterCustomer)
-	g.PUT("/customers/:cpf", registerController.PutRegisterCustomer)
+
+	updateController := controller.NewUpdateCustomerController(ctx, usecase.NewCustomerRegister(repo))
+	g.PUT("/customers/:cpf", updateController.PutUpdateCustomer)
 
 	findByCPFController := controller.NewFindCustomerByCPFController(ctx, usecase.NewCustomerFindByCPF(repo))
-	g.GET("/customers/cpf", findByCPFController.GetCustomerByCPF)
+	g.GET("/customers/:cpf", findByCPFController.GetCustomerByCPF)
 
 	findAllController := controller.NewFindAllCustomersController(ctx, usecase.NewCustomerFindAll(repo))
 	g.GET("/customers", findAllController.GetAllCustomers)
 
 }
 
-func setupContext() context.Context {
-	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
-	defer cancel()
-	return ctx
-}
-
 func setupDB() *gorm.DB {
-	db, err := gorm.Open(sqlite.Open(":memory:"), &gorm.Config{})
-	if err != nil {
-		panic(err)
+
+	host := "localhost"
+	port := "3306"
+	user := "root"
+	password := "root"
+	dbName := "dbcontrol"
+
+	db := infra.NewDB(host, port, user, password, dbName)
+
+	connection := db.GetConnection("mysql")
+	if connection == nil {
+		log.Fatal("Expected a non-nil MySQL connection, but got nil")
 	}
-	db.AutoMigrate(&model.Customer{})
-	return db
+
+	return connection
 }
 
 func (s *GinServer) Run(port string) {

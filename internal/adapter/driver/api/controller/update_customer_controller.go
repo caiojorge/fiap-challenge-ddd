@@ -9,34 +9,31 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type RegisterCustomerController struct {
+type UpdateCustomerController struct {
 	usecase portsusecase.RegisterCustomerUseCase
 	ctx     context.Context
 }
 
-func NewRegisterCustomerController(ctx context.Context, usecase portsusecase.RegisterCustomerUseCase) *RegisterCustomerController {
-	return &RegisterCustomerController{
+func NewUpdateCustomerController(ctx context.Context, usecase portsusecase.RegisterCustomerUseCase) *UpdateCustomerController {
+	return &UpdateCustomerController{
 		usecase: usecase,
 		ctx:     ctx,
 	}
 }
 
-func (r *RegisterCustomerController) PostRegisterCustomer(c *gin.Context) {
+func (r *UpdateCustomerController) PutUpdateCustomer(c *gin.Context) {
+	cpf := c.Param("cpf")
+	if cpf == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid data"})
+		return
+	}
+
 	var dto dto.CustomerDTO
 
 	if err := c.BindJSON(&dto); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid data"})
 		return
 	}
-
-	entity, err := dto.ToEntity()
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid data"})
-		return
-	}
-
-	r.usecase.RegisterCustomer(r.ctx, *entity)
-
 	// Use the user object, e.g., save to database, etc.
 	c.JSON(http.StatusOK, gin.H{"status": "customer created " + dto.Name})
 }

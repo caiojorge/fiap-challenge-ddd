@@ -21,11 +21,8 @@ func NewFindCustomerByCPFController(ctx context.Context, usecase portsusecase.Fi
 }
 
 func (cr *FindCustomerByCPFController) GetCustomerByCPF(c *gin.Context) {
-	cpf, ok := c.GetQuery("cpf")
-	if !ok {
-		// Handle the case where the id is missing.
-		c.JSON(http.StatusBadRequest, gin.H{"error": "missing cpf"})
-		return
-	}
+	//cpf, ok := c.GetQuery("cpf")
+	cpf := c.Param("cpf")
+
 	c.JSON(http.StatusOK, gin.H{"message": "Profile", "cpf": cpf})
 }

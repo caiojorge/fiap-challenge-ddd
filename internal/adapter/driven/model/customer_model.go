@@ -10,7 +10,7 @@ import (
 type Customer struct {
 	CPF   string `gorm:"primaryKey"`
 	Name  string
-	Email string `gorm:"unique"`
+	Email string
 }
 
 // Validate verifica se os campos obrigatórios de um cliente estão preenchidos.
