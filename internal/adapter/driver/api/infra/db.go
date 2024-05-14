@@ -57,9 +57,6 @@ func (d *DB) setupSQLite() *gorm.DB {
 
 func (d *DB) setupMysql() *gorm.DB {
 
-	//dsn := "myuser:mypass@tcp(127.0.0.1:3306)/dbcontrol?charset=utf8mb4&parseTime=True&loc=Local"
-	//dsn := "myuser:mypass@tcp(127.0.0.1:3306)/dbcontrol?charset=utf8mb4&parseTime=True&loc=Local"
-
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", d.User, d.Password, d.Host, d.Port, d.DBName)
 
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})

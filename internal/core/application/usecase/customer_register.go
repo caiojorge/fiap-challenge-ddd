@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"context"
+	"fmt"
 
 	portsrepository "github.com/caiojorge/fiap-challenge-ddd/internal/core/application/ports/repository"
 	"github.com/caiojorge/fiap-challenge-ddd/internal/core/domain/entity"
@@ -20,12 +21,14 @@ func NewCustomerRegister(repository portsrepository.CustomerRepository) *Custome
 // RegisterCustomer registra um novo cliente.
 func (cr *CustomerRegisterUseCase) RegisterCustomer(ctx context.Context, customer entity.Customer) error {
 
-	// Verifica se o cliente já existe
+	fmt.Println("usecase: verifica se o cliente existe: " + customer.GetCPF().Value)
 	_, err := cr.repository.Find(ctx, customer.GetCPF().Value)
 	if err != nil && err.Error() != "customer not found" {
+		fmt.Println("usecase: err: " + err.Error())
 		return err
 	}
 
+	fmt.Println("usecase: Criando cliente: " + customer.GetCPF().Value)
 	// Cria o cliente
 	err = cr.repository.Create(ctx, &customer)
 	if err != nil {

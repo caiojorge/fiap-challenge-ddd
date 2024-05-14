@@ -2,6 +2,7 @@ package controller
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 
 	"github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driver/api/dto"
@@ -35,6 +36,7 @@ func (r *RegisterCustomerController) PostRegisterCustomer(c *gin.Context) {
 		return
 	}
 
+	fmt.Println("controller: Criando cliente: " + dto.CPF)
 	r.usecase.RegisterCustomer(r.ctx, *entity)
 
 	// Use the user object, e.g., save to database, etc.
