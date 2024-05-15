@@ -44,7 +44,7 @@ func setupCustomerRoutes(ctx context.Context, db *gorm.DB, g *gin.RouterGroup) {
 	registerController := controller.NewRegisterCustomerController(ctx, uc)
 	g.POST("/customers", registerController.PostRegisterCustomer)
 
-	updateController := controller.NewUpdateCustomerController(ctx, usecase.NewCustomerRegister(repo))
+	updateController := controller.NewUpdateCustomerController(ctx, usecase.NewCustomerUpdate(repo))
 	g.PUT("/customers/:cpf", updateController.PutUpdateCustomer)
 
 	findByCPFController := controller.NewFindCustomerByCPFController(ctx, usecase.NewCustomerFindByCPF(repo))

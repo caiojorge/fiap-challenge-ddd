@@ -78,6 +78,21 @@ func TestCustomerRegister(t *testing.T) {
 	assert.NotNil(t, customers2)
 	assert.Len(t, customers2, 1)
 
+	updater := NewCustomerUpdate(repo)
+	assert.NotNil(t, updater)
+
+	customer3, err := entity.NewCustomer(*cpf, "John Doe update", "email@update.com")
+	assert.Nil(t, err)
+	assert.NotNil(t, customer3)
+
+	err = updater.UpdateCustomer(context.Background(), *customer3)
+	assert.Nil(t, err)
+
+	customer4, err := repo.Find(context.Background(), "123.456.789-09")
+	assert.Nil(t, err)
+	assert.NotNil(t, customer4)
+	assert.Equal(t, customer3, customer4)
+
 }
 
 type MockCustomerRepository struct {

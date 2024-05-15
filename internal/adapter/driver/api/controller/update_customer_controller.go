@@ -10,11 +10,11 @@ import (
 )
 
 type UpdateCustomerController struct {
-	usecase portsusecase.RegisterCustomerUseCase
+	usecase portsusecase.UpdateCustomerUseCase
 	ctx     context.Context
 }
 
-func NewUpdateCustomerController(ctx context.Context, usecase portsusecase.RegisterCustomerUseCase) *UpdateCustomerController {
+func NewUpdateCustomerController(ctx context.Context, usecase portsusecase.UpdateCustomerUseCase) *UpdateCustomerController {
 	return &UpdateCustomerController{
 		usecase: usecase,
 		ctx:     ctx,
@@ -34,6 +34,19 @@ func (r *UpdateCustomerController) PutUpdateCustomer(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid data"})
 		return
 	}
+
+	customer, err := dto.ToEntity()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid data"})
+		return
+	}
+
+	err = r.usecase.UpdateCustomer(r.ctx, *customer)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
 	// Use the user object, e.g., save to database, etc.
 	c.JSON(http.StatusOK, gin.H{"status": "customer created " + dto.Name})
 }

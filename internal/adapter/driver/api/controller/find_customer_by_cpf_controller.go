@@ -24,5 +24,16 @@ func (cr *FindCustomerByCPFController) GetCustomerByCPF(c *gin.Context) {
 	//cpf, ok := c.GetQuery("cpf")
 	cpf := c.Param("cpf")
 
-	c.JSON(http.StatusOK, gin.H{"message": "Profile", "cpf": cpf})
+	if cpf == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid data"})
+		return
+	}
+
+	customer, err := cr.usecase.FindCustomerByCPF(cr.ctx, cpf)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, customer)
 }
