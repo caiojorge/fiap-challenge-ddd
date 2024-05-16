@@ -4,6 +4,7 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driver/api/dto"
 	portsusecase "github.com/caiojorge/fiap-challenge-ddd/internal/core/application/ports/usecase"
 	"github.com/gin-gonic/gin"
 )
@@ -20,6 +21,15 @@ func NewFindAllCustomersController(ctx context.Context, usecase portsusecase.Fin
 	}
 }
 
+// GetAllCustomers returns a list of all customers
+// @Summary Get all customers
+// @Description Get details of all customers
+// @Tags Customers
+// @Accept  json
+// @Produce  json
+// @Success 200 {array} dto.CustomerDTO
+// @Failure 500 {object} map[string]string "Internal Server Error"
+// @Router /customers [get]
 func (cr *FindAllCustomersController) GetAllCustomers(c *gin.Context) {
 
 	customers, err := cr.usecase.FindAllCustomers(cr.ctx)
@@ -33,5 +43,12 @@ func (cr *FindAllCustomersController) GetAllCustomers(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, customers)
+	var dtoCustomers []dto.CustomerDTO
+	dto := dto.CustomerDTO{}
+	for _, customer := range customers {
+		dto.FromEntity(*customer)
+		dtoCustomers = append(dtoCustomers, dto)
+	}
+
+	c.JSON(http.StatusOK, dtoCustomers)
 }

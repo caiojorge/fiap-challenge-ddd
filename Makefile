@@ -19,3 +19,7 @@ swaggo:
 	go get -u github.com/swaggo/files
 	go get -u github.com/swaggo/gin-swagger/swaggerFiles
 	swag init -g cmd/kitchencontrol/main.go
+
+docs:
+	#rm -rf docs
+	swag init -g ./cmd/kitchencontrol/main.go -o ./docs

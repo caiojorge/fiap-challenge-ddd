@@ -30,29 +30,25 @@ func (s *GinServer) Initialization() *GinServer {
 	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
 	defer cancel()
 
-	g := s.router.Group("kitchencontrol/api/v1")
+	g := s.router.Group("/kitchencontrol/api/v1")
+	{
+		repo := repositorygorm.NewCustomerRepositoryGorm(db)
 
-	setupCustomerRoutes(ctx, db, g)
+		uc := usecase.NewCustomerRegister(repo)
+		registerController := controller.NewRegisterCustomerController(ctx, uc)
+		g.POST("/customers", registerController.PostRegisterCustomer)
+
+		updateController := controller.NewUpdateCustomerController(ctx, usecase.NewCustomerUpdate(repo))
+		g.PUT("/customers/:cpf", updateController.PutUpdateCustomer)
+
+		findByCPFController := controller.NewFindCustomerByCPFController(ctx, usecase.NewCustomerFindByCPF(repo))
+		g.GET("/customers/:cpf", findByCPFController.GetCustomerByCPF)
+
+		findAllController := controller.NewFindAllCustomersController(ctx, usecase.NewCustomerFindAll(repo))
+		g.GET("/customers", findAllController.GetAllCustomers)
+	}
 
 	return s
-}
-
-func setupCustomerRoutes(ctx context.Context, db *gorm.DB, g *gin.RouterGroup) {
-	repo := repositorygorm.NewCustomerRepositoryGorm(db)
-
-	uc := usecase.NewCustomerRegister(repo)
-	registerController := controller.NewRegisterCustomerController(ctx, uc)
-	g.POST("/customers", registerController.PostRegisterCustomer)
-
-	updateController := controller.NewUpdateCustomerController(ctx, usecase.NewCustomerUpdate(repo))
-	g.PUT("/customers/:cpf", updateController.PutUpdateCustomer)
-
-	findByCPFController := controller.NewFindCustomerByCPFController(ctx, usecase.NewCustomerFindByCPF(repo))
-	g.GET("/customers/:cpf", findByCPFController.GetCustomerByCPF)
-
-	findAllController := controller.NewFindAllCustomersController(ctx, usecase.NewCustomerFindAll(repo))
-	g.GET("/customers", findAllController.GetAllCustomers)
-
 }
 
 func setupDB() *gorm.DB {

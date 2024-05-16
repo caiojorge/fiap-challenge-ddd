@@ -11,6 +11,12 @@ type CustomerDTO struct {
 	Email string `json:"email"`
 }
 
+func (c *CustomerDTO) FromEntity(customer entity.Customer) {
+	c.CPF = customer.CPF.Value
+	c.Name = customer.Name
+	c.Email = customer.Email
+}
+
 func (c *CustomerDTO) ToEntity() (*entity.Customer, error) {
 	cpf, err := valueobject.NewCPF(c.CPF)
 	if err != nil {

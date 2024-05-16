@@ -21,6 +21,18 @@ func NewUpdateCustomerController(ctx context.Context, usecase portsusecase.Updat
 	}
 }
 
+// PutUpdateCustomer updates a customer by cpf
+// @Summary Update a customer
+// @Description Update details of a customer by cpf
+// @Tags Customers
+// @Accept  json
+// @Produce  json
+// @Param id path int true "Customer cpf"
+// @Param customer body dto.CustomerDTO true "Customer data"
+// @Success 200 {object} dto.CustomerDTO
+// @Failure 400 {object} map[string]string "Invalid data"
+// @Failure 404 {object} map[string]string "Customer not found"
+// @Router /customers/{cpf} [put]
 func (r *UpdateCustomerController) PutUpdateCustomer(c *gin.Context) {
 	cpf := c.Param("cpf")
 	if cpf == "" {
@@ -48,5 +60,5 @@ func (r *UpdateCustomerController) PutUpdateCustomer(c *gin.Context) {
 	}
 
 	// Use the user object, e.g., save to database, etc.
-	c.JSON(http.StatusOK, gin.H{"status": "customer created " + dto.Name})
+	c.JSON(http.StatusOK, dto)
 }

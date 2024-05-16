@@ -11,7 +11,15 @@ Projeto para finalização do curso de DDD, das disciplinas de DDD, Docker e Arq
 
 ## Installation
 
-Instructions on how to install and set up the project.
+SWAG no desenvolvimento apenas.
+Se o comando swag --version não funcionar, executar os passos abaixo:
+Para gerar a documentação no padrão open api, será necessário instalar o swag
+
+go install github.com/swaggo/swag/cmd/swag@latest
+echo 'export PATH=$PATH:$(go env GOPATH)/bin' >> ~/.bashrc
+source ~/.bashrc
+swag --version
+
 
 ## Usage
 

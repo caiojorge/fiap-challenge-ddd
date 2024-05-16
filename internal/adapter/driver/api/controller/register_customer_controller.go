@@ -22,6 +22,16 @@ func NewRegisterCustomerController(ctx context.Context, usecase portsusecase.Reg
 	}
 }
 
+// PostRegisterCustomer godoc
+// @Summary Create Customer
+// @Schemes
+// @Description Create Customer in DB
+// @Tags Customers
+// @Accept json
+// @Produce json
+// @Param        request   body     dto.CustomerDTO  true  "user request"
+// @Success 200 {object} dto.CustomerDTO
+// @Router /customers [post]
 func (r *RegisterCustomerController) PostRegisterCustomer(c *gin.Context) {
 	var dto dto.CustomerDTO
 
@@ -40,5 +50,6 @@ func (r *RegisterCustomerController) PostRegisterCustomer(c *gin.Context) {
 	r.usecase.RegisterCustomer(r.ctx, *entity)
 
 	// Use the user object, e.g., save to database, etc.
-	c.JSON(http.StatusOK, gin.H{"status": "customer created " + dto.Name})
+	// gin.H{"status": "customer created " + dto.Name}
+	c.JSON(http.StatusOK, dto)
 }

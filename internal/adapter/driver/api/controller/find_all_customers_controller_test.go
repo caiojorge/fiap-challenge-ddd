@@ -7,6 +7,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driver/api/dto"
 	portsrepository "github.com/caiojorge/fiap-challenge-ddd/internal/core/application/ports/repository"
 	"github.com/caiojorge/fiap-challenge-ddd/internal/core/domain/entity"
 	"github.com/caiojorge/fiap-challenge-ddd/internal/core/domain/valueobject"
@@ -35,7 +36,7 @@ func TestGetAllCustomers(t *testing.T) {
 	assert.Equal(t, http.StatusOK, resp.Code)
 
 	// Now parse the JSON body into the slice of Customer structs
-	var customers []*entity.Customer
+	var customers []*dto.CustomerDTO
 	err := json.Unmarshal(resp.Body.Bytes(), &customers)
 	assert.NoError(t, err, "Should decode response without error")
 
@@ -46,9 +47,9 @@ func TestGetAllCustomers(t *testing.T) {
 	cpf1, _ := valueobject.NewCPF("400.228.165-50")
 	cpf2, _ := valueobject.NewCPF("364.584.534-85")
 
-	expectedCustomers := []*entity.Customer{
-		{CPF: *cpf1, Name: "John Doe", Email: "john@example.com"},
-		{CPF: *cpf2, Name: "Jane Doe", Email: "jane@example.com"},
+	expectedCustomers := []*dto.CustomerDTO{
+		{CPF: cpf1.GetValue(), Name: "John Doe", Email: "john@example.com"},
+		{CPF: cpf2.GetValue(), Name: "Jane Doe", Email: "jane@example.com"},
 	}
 	assert.Equal(t, expectedCustomers, customers, "Expected returned customers to match mock data")
 

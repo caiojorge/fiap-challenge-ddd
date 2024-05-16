@@ -1,8 +1,10 @@
 package main
 
 import (
-	_ "github.com/caiojorge/fiap-challenge-ddd/docs"
+	"github.com/caiojorge/fiap-challenge-ddd/docs"
 	"github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driver/api/server"
+	swaggerfiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 // @title Fiap Challenge DDD API
@@ -18,12 +20,17 @@ import (
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
 
 // @host localhost:8080
-// @BasePath kitchencontrol/api/v1
+// @BasePath /kitchencontrol/api/v1
 
 func main() {
-	server := server.NewServer()
-	//server.GetRouter().GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	server.Initialization().Run(":8080")
+	server := server.NewServer()
+
+	server.Initialization()
+
+	docs.SwaggerInfo.BasePath = "/kitchencontrol/api/v1"
+	server.GetRouter().GET("/kitchencontrol/api/v1/docs/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
+
+	server.Run(":8080")
 
 }

@@ -1,4 +1,14 @@
-basePath: kitchencontrol/api/v1
+basePath: /kitchencontrol/api/v1
+definitions:
+  dto.CustomerDTO:
+    properties:
+      cpf:
+        type: string
+      email:
+        type: string
+      name:
+        type: string
+    type: object
 host: localhost:8080
 info:
   contact:
@@ -12,5 +22,115 @@ info:
   termsOfService: http://swagger.io/terms/
   title: Fiap Challenge DDD API
   version: "1.0"
-paths: {}
+paths:
+  /customers:
+    get:
+      consumes:
+      - application/json
+      description: Get details of all customers
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/dto.CustomerDTO'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get all customers
+      tags:
+      - Customers
+    post:
+      consumes:
+      - application/json
+      description: Create Customer in DB
+      parameters:
+      - description: user request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CustomerDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.CustomerDTO'
+      summary: Create Customer
+      tags:
+      - Customers
+  /customers/{cpf}:
+    get:
+      consumes:
+      - application/json
+      description: Get details of a customer by cpf
+      parameters:
+      - description: Customer cpf
+        in: path
+        name: cpf
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.CustomerDTO'
+        "404":
+          description: Customer not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get a customer
+      tags:
+      - Customers
+  /customers/{id}:
+    put:
+      consumes:
+      - application/json
+      description: Update details of a customer by cpf
+      parameters:
+      - description: Customer cpf
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Customer data
+        in: body
+        name: customer
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CustomerDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.CustomerDTO'
+        "400":
+          description: Invalid data
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Customer not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update a customer
+      tags:
+      - Customers
 swagger: "2.0"
