@@ -15,6 +15,15 @@ func TestCustomerWithError1(t *testing.T) {
 	}
 
 	assert.NotNil(t, model.Validate())
+
+	model = Customer{
+		CPF:   "12345678909",
+		Name:  "J",
+		Email: "email@email.com",
+	}
+
+	assert.NotNil(t, model.Validate())
+
 }
 
 func TestCustomerWithError2(t *testing.T) {

@@ -106,7 +106,7 @@ const docTemplate = `{
                 "summary": "Get a customer",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "Customer cpf",
                         "name": "cpf",
                         "in": "path",
@@ -130,9 +130,7 @@ const docTemplate = `{
                         }
                     }
                 }
-            }
-        },
-        "/customers/{id}": {
+            },
             "put": {
                 "description": "Update details of a customer by cpf",
                 "consumes": [
@@ -147,7 +145,7 @@ const docTemplate = `{
                 "summary": "Update a customer",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "Customer cpf",
                         "name": "id",
                         "in": "path",

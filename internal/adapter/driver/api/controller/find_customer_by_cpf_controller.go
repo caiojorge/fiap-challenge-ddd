@@ -6,6 +6,7 @@ import (
 
 	"github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driver/api/dto"
 	portsusecase "github.com/caiojorge/fiap-challenge-ddd/internal/core/application/ports/usecase"
+	"github.com/caiojorge/fiap-challenge-ddd/internal/shared/formatter"
 	"github.com/gin-gonic/gin"
 )
 
@@ -26,7 +27,7 @@ func NewFindCustomerByCPFController(ctx context.Context, usecase portsusecase.Fi
 // @Tags Customers
 // @Accept  json
 // @Produce  json
-// @Param cpf path int true "Customer cpf"
+// @Param cpf path string true "Customer cpf"
 // @Success 200 {object} dto.CustomerDTO
 // @Failure 404 {object} map[string]string "Customer not found"
 // @Router /customers/{cpf} [get]
@@ -39,7 +40,7 @@ func (cr *FindCustomerByCPFController) GetCustomerByCPF(c *gin.Context) {
 		return
 	}
 
-	customer, err := cr.usecase.FindCustomerByCPF(cr.ctx, cpf)
+	customer, err := cr.usecase.FindCustomerByCPF(cr.ctx, formatter.RemoveFormatFromCPF(cpf))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

@@ -27,7 +27,7 @@ func NewUpdateCustomerController(ctx context.Context, usecase portsusecase.Updat
 // @Tags Customers
 // @Accept  json
 // @Produce  json
-// @Param id path int true "Customer cpf"
+// @Param id path string true "Customer cpf"
 // @Param customer body dto.CustomerDTO true "Customer data"
 // @Success 200 {object} dto.CustomerDTO
 // @Failure 400 {object} map[string]string "Invalid data"
@@ -59,6 +59,5 @@ func (r *UpdateCustomerController) PutUpdateCustomer(c *gin.Context) {
 		return
 	}
 
-	// Use the user object, e.g., save to database, etc.
 	c.JSON(http.StatusOK, dto)
 }

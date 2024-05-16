@@ -19,15 +19,14 @@ func TestFromEntity(t *testing.T) {
 	assert.NotNil(t, customer)
 	assert.Nil(t, err)
 
-	//var model *model.Customer
 	model := converter.FromEntity(customer)
 	assert.NotNil(t, model)
-	assert.Equal(t, customer.GetCPF().Value, model.CPF)
+	assert.Equal(t, "12345678909", model.CPF)
 	assert.Equal(t, customer.GetName(), model.Name)
 	assert.Equal(t, customer.GetEmail(), model.Email)
 
-}
+	entity := converter.ToEntity(model)
+	assert.NotNil(t, entity)
+	assert.Equal(t, customer, entity)
 
-func TestToEntity(t *testing.T) {
-	// TODO: Add test cases for ToEntity function
 }

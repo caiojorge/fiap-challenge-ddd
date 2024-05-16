@@ -77,7 +77,7 @@ paths:
         in: path
         name: cpf
         required: true
-        type: integer
+        type: string
       produces:
       - application/json
       responses:
@@ -94,7 +94,6 @@ paths:
       summary: Get a customer
       tags:
       - Customers
-  /customers/{id}:
     put:
       consumes:
       - application/json
@@ -104,7 +103,7 @@ paths:
         in: path
         name: id
         required: true
-        type: integer
+        type: string
       - description: Customer data
         in: body
         name: customer

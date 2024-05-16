@@ -1,6 +1,7 @@
 package valueobject
 
 import (
+	"github.com/caiojorge/fiap-challenge-ddd/internal/shared/formatter"
 	"github.com/caiojorge/fiap-challenge-ddd/internal/shared/validator"
 )
 
@@ -32,4 +33,21 @@ func (c *CPF) Validate() error {
 	cpfValidator := validator.CPFValidator{}
 
 	return cpfValidator.Validate(cpf)
+}
+
+func (c *CPF) Format() (string, error) {
+	cpf := c.Value
+
+	cpfFormatter, err := formatter.FormatCPF(cpf)
+	if err != nil {
+		return "", err
+	}
+
+	return cpfFormatter, nil
+}
+
+func (c *CPF) RemoveFormat() string {
+	cpf := c.Value
+
+	return formatter.RemoveFormatFromCPF(cpf)
 }

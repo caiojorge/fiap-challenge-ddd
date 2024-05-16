@@ -44,7 +44,7 @@ func TestNewCustomer(t *testing.T) {
 	assert.NotNil(t, customers)
 	assert.Len(t, customers, 1)
 
-	customer2, err := repo.Find(ctx, "123.456.789-09")
+	customer2, err := repo.Find(ctx, "12345678909")
 	assert.Nil(t, err)
 	assert.NotNil(t, customer2)
 	assert.Equal(t, customer, customer2)
@@ -53,7 +53,7 @@ func TestNewCustomer(t *testing.T) {
 	err = repo.Update(ctx, customer)
 	assert.Nil(t, err)
 
-	customer3, err := repo.Find(ctx, "123.456.789-09")
+	customer3, err := repo.Find(ctx, "12345678909")
 	assert.Nil(t, err)
 	assert.NotNil(t, customer3)
 	assert.Equal(t, customer.Name, customer3.GetName())

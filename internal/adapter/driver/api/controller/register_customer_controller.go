@@ -2,6 +2,7 @@ package controller
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net/http"
 
@@ -9,6 +10,8 @@ import (
 	portsusecase "github.com/caiojorge/fiap-challenge-ddd/internal/core/application/ports/usecase"
 	"github.com/gin-gonic/gin"
 )
+
+var ErrCustomerAlreadyExists = errors.New("customer already exists")
 
 type RegisterCustomerController struct {
 	usecase portsusecase.RegisterCustomerUseCase
@@ -47,7 +50,15 @@ func (r *RegisterCustomerController) PostRegisterCustomer(c *gin.Context) {
 	}
 
 	fmt.Println("controller: Criando cliente: " + dto.CPF)
-	r.usecase.RegisterCustomer(r.ctx, *entity)
+	err = r.usecase.RegisterCustomer(r.ctx, *entity)
+	if err != nil {
+		if err == ErrCustomerAlreadyExists {
+			c.JSON(http.StatusConflict, gin.H{"error": "Customer already exists"})
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		}
+		return
+	}
 
 	// Use the user object, e.g., save to database, etc.
 	// gin.H{"status": "customer created " + dto.Name}

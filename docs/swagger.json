@@ -100,7 +100,7 @@
                 "summary": "Get a customer",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "Customer cpf",
                         "name": "cpf",
                         "in": "path",
@@ -124,9 +124,7 @@
                         }
                     }
                 }
-            }
-        },
-        "/customers/{id}": {
+            },
             "put": {
                 "description": "Update details of a customer by cpf",
                 "consumes": [
@@ -141,7 +139,7 @@
                 "summary": "Update a customer",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "Customer cpf",
                         "name": "id",
                         "in": "path",
