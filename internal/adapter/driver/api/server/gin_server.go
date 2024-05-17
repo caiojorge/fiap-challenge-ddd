@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driven/repositorygorm"
-	"github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driver/api/controller"
+	controller "github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driver/api/controller/customer"
 	"github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driver/api/infra"
 	"github.com/caiojorge/fiap-challenge-ddd/internal/core/application/usecase"
 	"github.com/gin-gonic/gin"
