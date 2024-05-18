@@ -3,12 +3,13 @@ package entity
 import (
 	"testing"
 
+	"github.com/caiojorge/fiap-challenge-ddd/internal/shared"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestProduct(t *testing.T) {
 
-	product, err := NewProduct("Lanche XPTO", "Pão queijo e carne", "Lanche", 30.00)
+	product, err := NewProduct(shared.NewIDGenerator(), "Lanche XPTO", "Pão queijo e carne", "Lanche", 30.00)
 	assert.Nil(t, err)
 	assert.NotNil(t, product)
 

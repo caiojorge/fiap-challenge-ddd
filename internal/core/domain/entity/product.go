@@ -2,8 +2,6 @@ package entity
 
 import (
 	"errors"
-
-	"github.com/google/uuid"
 )
 
 type Product struct {
@@ -14,10 +12,10 @@ type Product struct {
 	Category    string
 }
 
-func NewProduct(name, description, category string, price float64) (*Product, error) {
+func NewProduct(id, name, description, category string, price float64) (*Product, error) {
 
 	product := &Product{
-		ID:          uuid.New().String(),
+		ID:          id,
 		Name:        name,
 		Description: description,
 		Price:       price,

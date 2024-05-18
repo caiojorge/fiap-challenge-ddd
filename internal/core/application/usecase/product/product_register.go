@@ -22,6 +22,7 @@ func NewProductRegister(repository portsrepository.ProductRepository) *ProductRe
 // RegisterProduct registra um novo cliente.
 func (cr *ProductRegisterUseCase) RegisterProduct(ctx context.Context, product entity.Product) error {
 
+	// TODO: aqui tem um problema; o id deve ser gerado no repositorio, então, não faz sentido validar por ID aqui.
 	fmt.Println("usecase: verifica se o produto existe: " + product.GetID())
 	entityFound, err := cr.repository.Find(ctx, product.GetID())
 	if err != nil && err.Error() != "product not found" {

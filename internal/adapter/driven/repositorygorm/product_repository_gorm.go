@@ -8,6 +8,7 @@ import (
 	"github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driven/converter"
 	"github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driven/model"
 	"github.com/caiojorge/fiap-challenge-ddd/internal/core/domain/entity"
+	"github.com/caiojorge/fiap-challenge-ddd/internal/shared"
 	"gorm.io/gorm"
 )
 
@@ -26,6 +27,12 @@ func NewProductRepositoryGorm(db *gorm.DB, converter converter.Converter[entity.
 func (r *ProductRepositoryGorm) Create(ctx context.Context, entity *entity.Product) error {
 	fmt.Println("repositorygorm: Criando produto: " + entity.GetID())
 	model := r.converter.FromEntity(entity)
+
+	// o id é gerado no momento da gravação
+	id := shared.NewIDGenerator()
+	entity.RedifneID(id)
+	model.ID = id
+
 	return r.DB.Create(model).Error
 }
 

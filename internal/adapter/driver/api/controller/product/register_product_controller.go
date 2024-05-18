@@ -59,5 +59,7 @@ func (r *RegisterProductController) PostRegisterProduct(c *gin.Context) {
 	// 	return
 	// }
 
+	// Nesse cenário, o ID informado será ignorado e um novo ID será gerado
+
 	c.JSON(http.StatusOK, dto)
 }

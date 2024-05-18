@@ -7,6 +7,7 @@ import (
 
 	"github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driven/converter"
 	"github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driven/model"
+	"github.com/caiojorge/fiap-challenge-ddd/internal/shared"
 
 	"github.com/caiojorge/fiap-challenge-ddd/internal/core/domain/entity"
 	"github.com/stretchr/testify/assert"
@@ -30,7 +31,10 @@ func TestProdcut(t *testing.T) {
 
 	repo := NewProductRepositoryGorm(db, converter)
 
-	product, err := entity.NewProduct("Lanche XPTO", "Pão queijo e carne", "Lanche", 30.00)
+	id := shared.NewIDGenerator()
+	assert.NotEmpty(t, id)
+
+	product, err := entity.NewProduct(id, "Lanche XPTO", "Pão queijo e carne", "Lanche", 30.00)
 	assert.Nil(t, err)
 	assert.NotNil(t, product)
 	assert.NotEmpty(t, product.GetID())

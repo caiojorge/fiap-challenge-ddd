@@ -7,13 +7,14 @@ import (
 	"testing"
 
 	"github.com/caiojorge/fiap-challenge-ddd/internal/core/domain/entity"
+	"github.com/caiojorge/fiap-challenge-ddd/internal/shared"
 	"github.com/stretchr/testify/assert"
 	_ "github.com/stretchr/testify/assert"
 )
 
 func TestProductRegisterAndUpdater(t *testing.T) {
 
-	product, err := entity.NewProduct("Lanche XPTO", "Pão queijo e carne", "Lanche", 30.00)
+	product, err := entity.NewProduct(shared.NewIDGenerator(), "Lanche XPTO", "Pão queijo e carne", "Lanche", 30.00)
 	assert.Nil(t, err)
 	assert.NotNil(t, product)
 
@@ -116,15 +117,15 @@ func (repo *MockProductRepository) FindAll(ctx context.Context) ([]*entity.Produ
 	return products, nil
 }
 
-func (repo *MockProductRepository) Delete(ctx context.Context, id string) (*entity.Product, error) {
+func (repo *MockProductRepository) Delete(ctx context.Context, id string) error {
 	repo.mu.Lock()
 	defer repo.mu.Unlock()
 
-	product, exists := repo.products[id]
+	_, exists := repo.products[id]
 	if !exists {
-		return nil, errors.New("product not found")
+		return errors.New("product not found")
 	}
 
 	delete(repo.products, id)
-	return product, nil
+	return nil
 }
