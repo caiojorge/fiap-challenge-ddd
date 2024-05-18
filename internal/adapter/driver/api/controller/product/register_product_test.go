@@ -25,13 +25,7 @@ func TestRegisterProductController(t *testing.T) {
 	r.POST("/register", controller.PostRegisterProduct)
 
 	// Create a JSON body
-	requestBody := bytes.NewBuffer([]byte(
-		`{
-			"name":"Lanche XPTO", 
-			"description":"Pão, carne, queijo e presunto",
-			"category":"Lanche",
-			"price": 100.00
-		}`))
+	requestBody := bytes.NewBuffer([]byte(`{"id": "1", "name":"Lanche XPTO","description":"Pão, carne, queijo e presunto","category":"Lanche","price": 100}`))
 
 	// Create the HTTP request with JSON body
 	req, err := http.NewRequest("POST", "/register", requestBody)
@@ -50,5 +44,5 @@ func TestRegisterProductController(t *testing.T) {
 	assert.Equal(t, http.StatusOK, w.Code)
 
 	// compare the response with the expected result
-	assert.Equal(t, `{"name":"Lanche XPTO","description":"Pão, carne, queijo e presunto","price":100,"category":"Lanche"}`, w.Body.String())
+	assert.Equal(t, `{"id":"1","name":"Lanche XPTO","description":"Pão, carne, queijo e presunto","category":"Lanche","price":100}`, w.Body.String())
 }

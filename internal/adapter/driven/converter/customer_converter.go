@@ -7,6 +7,8 @@ import (
 	"github.com/caiojorge/fiap-challenge-ddd/internal/shared/formatter"
 )
 
+// TODO: voltar aqui para usar metodos ao invés de func: type CustomerConverter struct{}
+
 func FromEntity(entity *entity.Customer) *model.Customer {
 
 	cpfWithoutNonDigits := formatter.RemoveFormatFromCPF(entity.GetCPF().Value)
@@ -18,6 +20,7 @@ func FromEntity(entity *entity.Customer) *model.Customer {
 	}
 }
 
+// TODO: voltar aqui para avaliar se é melhor retornar um erro tbm
 func ToEntity(model *model.Customer) *entity.Customer {
 	cpfWithNonDigits, err := formatter.FormatCPF(model.CPF)
 

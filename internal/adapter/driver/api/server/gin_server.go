@@ -8,7 +8,7 @@ import (
 	"github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driven/repositorygorm"
 	controller "github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driver/api/controller/customer"
 	"github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driver/api/infra"
-	"github.com/caiojorge/fiap-challenge-ddd/internal/core/application/usecase"
+	usecase "github.com/caiojorge/fiap-challenge-ddd/internal/core/application/usecase/customer"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )

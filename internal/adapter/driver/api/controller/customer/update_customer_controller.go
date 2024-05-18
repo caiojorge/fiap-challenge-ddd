@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driver/api/dto"
-	portsusecase "github.com/caiojorge/fiap-challenge-ddd/internal/core/application/ports/usecase"
+	portsusecase "github.com/caiojorge/fiap-challenge-ddd/internal/core/application/ports/usecase/customer"
 	"github.com/gin-gonic/gin"
 )
 
