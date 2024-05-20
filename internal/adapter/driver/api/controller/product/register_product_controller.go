@@ -3,23 +3,25 @@ package controller
 import (
 	"context"
 	"errors"
+	"fmt"
 	"net/http"
 
 	"github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driver/api/dto"
+	portsusecase "github.com/caiojorge/fiap-challenge-ddd/internal/core/application/ports/usecase/product"
 	"github.com/gin-gonic/gin"
 )
 
-var ErrCustomerAlreadyExists = errors.New("customer already exists")
+var ErrAlreadyExists = errors.New("product already exists")
 
 type RegisterProductController struct {
-	//usecase portsusecase.RegisterCustomerUseCase
-	ctx context.Context
+	usecase portsusecase.RegisterProductUseCase
+	ctx     context.Context
 }
 
-func NewRegisterProductController(ctx context.Context) *RegisterProductController {
+func NewRegisterProductController(ctx context.Context, usecase portsusecase.RegisterProductUseCase) *RegisterProductController {
 	return &RegisterProductController{
-		//usecase: usecase,
-		ctx: ctx,
+		usecase: usecase,
+		ctx:     ctx,
 	}
 }
 
@@ -42,22 +44,22 @@ func (r *RegisterProductController) PostRegisterProduct(c *gin.Context) {
 		return
 	}
 
-	// entity, err := dto.ToEntity()
-	// if err != nil {
-	// 	c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid data"})
-	// 	return
-	// }
+	entity, err := dto.ToEntity()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid data"})
+		return
+	}
 
-	// fmt.Println("controller: Criando cliente: " + dto.CPF)
-	// err = r.usecase.RegisterCustomer(r.ctx, *entity)
-	// if err != nil {
-	// 	if err == ErrCustomerAlreadyExists {
-	// 		c.JSON(http.StatusConflict, gin.H{"error": "Customer already exists"})
-	// 	} else {
-	// 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-	// 	}
-	// 	return
-	// }
+	fmt.Println("controller: Criando product: " + dto.Name)
+	err = r.usecase.RegisterProduct(r.ctx, *entity)
+	if err != nil {
+		if err == ErrAlreadyExists {
+			c.JSON(http.StatusConflict, gin.H{"error": "product already exists"})
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		}
+		return
+	}
 
 	// Nesse cenário, o ID informado será ignorado e um novo ID será gerado
 
