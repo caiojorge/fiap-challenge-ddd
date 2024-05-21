@@ -64,11 +64,6 @@ func (d *DB) setupMysql() *gorm.DB {
 		log.Fatalf("Failed to connect to the database: %v", err)
 	}
 
-	// Migrate the schema
-	if err := db.AutoMigrate(&model.Customer{}); err != nil {
-		log.Fatalf("Failed to migrate database schema: %v", err)
-	}
-
 	log.Println("Database schema migrated")
 
 	return db

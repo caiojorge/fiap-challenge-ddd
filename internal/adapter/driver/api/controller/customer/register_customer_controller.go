@@ -32,8 +32,11 @@ func NewRegisterCustomerController(ctx context.Context, usecase portsusecase.Reg
 // @Tags Customers
 // @Accept json
 // @Produce json
-// @Param        request   body     dto.CustomerDTO  true  "user request"
+// @Param        request   body     dto.CustomerDTO  true  "cria novo cliente"
 // @Success 200 {object} dto.CustomerDTO
+// @Failure 400 {object} map[string]string "invalid data"
+// @Failure 409 {object} map[string]string "customer already exists"
+// @Failure 500 {object} map[string]string "internal server error"
 // @Router /customers [post]
 func (r *RegisterCustomerController) PostRegisterCustomer(c *gin.Context) {
 	var dto dto.CustomerDTO

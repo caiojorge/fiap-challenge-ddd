@@ -5,10 +5,14 @@ import (
 	"log"
 	"time"
 
+	"github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driven/converter"
+	"github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driven/model"
 	"github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driven/repositorygorm"
-	controller "github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driver/api/controller/customer"
+	controllercustomer "github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driver/api/controller/customer"
+	controllerproduct "github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driver/api/controller/product"
 	"github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driver/api/infra"
-	usecase "github.com/caiojorge/fiap-challenge-ddd/internal/core/application/usecase/customer"
+	usecasecustomer "github.com/caiojorge/fiap-challenge-ddd/internal/core/application/usecase/customer"
+	usecaseproduct "github.com/caiojorge/fiap-challenge-ddd/internal/core/application/usecase/product"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
@@ -30,22 +34,40 @@ func (s *GinServer) Initialization() *GinServer {
 	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
 	defer cancel()
 
-	g := s.router.Group("/kitchencontrol/api/v1")
+	g := s.router.Group("/kitchencontrol/api/v1/customers")
 	{
 		repo := repositorygorm.NewCustomerRepositoryGorm(db)
 
-		uc := usecase.NewCustomerRegister(repo)
-		registerController := controller.NewRegisterCustomerController(ctx, uc)
-		g.POST("/customers", registerController.PostRegisterCustomer)
+		registerController := controllercustomer.NewRegisterCustomerController(ctx, usecasecustomer.NewCustomerRegister(repo))
+		g.POST("/", registerController.PostRegisterCustomer)
 
-		updateController := controller.NewUpdateCustomerController(ctx, usecase.NewCustomerUpdate(repo))
-		g.PUT("/customers/:cpf", updateController.PutUpdateCustomer)
+		updateController := controllercustomer.NewUpdateCustomerController(ctx, usecasecustomer.NewCustomerUpdate(repo))
+		g.PUT("/:cpf", updateController.PutUpdateCustomer)
 
-		findByCPFController := controller.NewFindCustomerByCPFController(ctx, usecase.NewCustomerFindByCPF(repo))
-		g.GET("/customers/:cpf", findByCPFController.GetCustomerByCPF)
+		findByCPFController := controllercustomer.NewFindCustomerByCPFController(ctx, usecasecustomer.NewCustomerFindByCPF(repo))
+		g.GET("/:cpf", findByCPFController.GetCustomerByCPF)
 
-		findAllController := controller.NewFindAllCustomersController(ctx, usecase.NewCustomerFindAll(repo))
-		g.GET("/customers", findAllController.GetAllCustomers)
+		findAllController := controllercustomer.NewFindAllCustomersController(ctx, usecasecustomer.NewCustomerFindAll(repo))
+		g.GET("/", findAllController.GetAllCustomers)
+	}
+
+	p := s.router.Group("/kitchencontrol/api/v1/products")
+	{
+		converter := converter.NewProductConverter()
+		repo := repositorygorm.NewProductRepositoryGorm(db, converter)
+
+		registerController := controllerproduct.NewRegisterProductController(ctx, usecaseproduct.NewProductRegister(repo))
+		p.POST("/", registerController.PostRegisterProduct)
+
+		findAllController := controllerproduct.NewFindAllProductController(ctx, usecaseproduct.NewProductFindAll(repo))
+		p.GET("/", findAllController.GetAllProducts)
+
+		findByIDController := controllerproduct.NewFindProductByIDController(ctx, usecaseproduct.NewProductFindByID(repo))
+		p.GET("/:id", findByIDController.GetProductByID)
+
+		updateController := controllerproduct.NewUpdateProductController(ctx, usecaseproduct.NewProductUpdate(repo))
+		p.PUT("/:id", updateController.PutUpdateProduct)
+
 	}
 
 	return s
@@ -61,9 +83,15 @@ func setupDB() *gorm.DB {
 
 	db := infra.NewDB(host, port, user, password, dbName)
 
+	// get a connection
 	connection := db.GetConnection("mysql")
 	if connection == nil {
 		log.Fatal("Expected a non-nil MySQL connection, but got nil")
+	}
+
+	// Migrate the schema
+	if err := connection.AutoMigrate(&model.Customer{}, &model.Product{}); err != nil {
+		log.Fatalf("Failed to migrate database schema: %v", err)
 	}
 
 	return connection

@@ -2,10 +2,10 @@ test:
 	go test -v -cover ./...
 
 tidy:
-	go mod tidy	
-	
+	go mod tidy
+
 run:
-	go run cmd/kitchencontrol/main.go	
+	go run cmd/kitchencontrol/main.go
 
 mysql:
 	docker-compose up -d
@@ -23,3 +23,12 @@ swaggo:
 docs:
 	#rm -rf docs
 	swag init -g ./cmd/kitchencontrol/main.go -o ./docs
+
+test-coverage:
+	go test -coverprofile=coverage.out ./...
+
+coverage: test-coverage
+	go tool cover -func=coverage.out
+
+coverage-html: test-coverage
+	go tool cover -html=coverage.out

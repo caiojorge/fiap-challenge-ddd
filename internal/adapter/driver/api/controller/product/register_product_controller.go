@@ -32,10 +32,12 @@ func NewRegisterProductController(ctx context.Context, usecase portsusecase.Regi
 // @Tags Products
 // @Accept json
 // @Produce json
-// @Param        request   body     dto.ProductDTO  true  "user request"
+// @Param        request   body     dto.ProductDTO  true  "cria novo produto"
 // @Success 200 {object} dto.ProductDTO
-// @Failure 400 {object} string
-// @Router /customers [post]
+// @Failure 400 {object} string "invalid data"
+// @Failure 409 {object} string "product already exists"
+// @Failure 500 {object} string "internal server error"
+// @Router /products [post]
 func (r *RegisterProductController) PostRegisterProduct(c *gin.Context) {
 	var dto dto.ProductDTO
 
@@ -50,6 +52,7 @@ func (r *RegisterProductController) PostRegisterProduct(c *gin.Context) {
 		return
 	}
 
+	// Nesse cenário, o ID informado será ignorado e um novo ID será gerado
 	fmt.Println("controller: Criando product: " + dto.Name)
 	err = r.usecase.RegisterProduct(r.ctx, *entity)
 	if err != nil {
@@ -60,8 +63,6 @@ func (r *RegisterProductController) PostRegisterProduct(c *gin.Context) {
 		}
 		return
 	}
-
-	// Nesse cenário, o ID informado será ignorado e um novo ID será gerado
 
 	c.JSON(http.StatusOK, dto)
 }

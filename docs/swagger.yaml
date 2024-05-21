@@ -9,6 +9,19 @@ definitions:
       name:
         type: string
     type: object
+  dto.ProductDTO:
+    properties:
+      category:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      price:
+        type: number
+    type: object
 host: localhost:8080
 info:
   contact:
@@ -51,7 +64,7 @@ paths:
       - application/json
       description: Create Customer in DB
       parameters:
-      - description: user request
+      - description: cria novo cliente
         in: body
         name: request
         required: true
@@ -64,6 +77,24 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/dto.CustomerDTO'
+        "400":
+          description: invalid data
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "409":
+          description: customer already exists
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
       summary: Create Customer
       tags:
       - Customers
@@ -132,4 +163,129 @@ paths:
       summary: Update a customer
       tags:
       - Customers
+  /products:
+    get:
+      consumes:
+      - application/json
+      description: Get details of all products
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/dto.ProductDTO'
+            type: array
+        "400":
+          description: Invalida data
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: No products foundr
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get all products
+      tags:
+      - Products
+    post:
+      consumes:
+      - application/json
+      description: Create Product in DB
+      parameters:
+      - description: cria novo produto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.ProductDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.ProductDTO'
+        "400":
+          description: invalid data
+          schema:
+            type: string
+        "409":
+          description: product already exists
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      summary: Create Product
+      tags:
+      - Products
+  /products/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get details of a Product by id
+      parameters:
+      - description: Product id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.ProductDTO'
+        "404":
+          description: Product not found
+          schema:
+            type: string
+        "500":
+          description: Product not found
+          schema:
+            type: string
+      summary: Get a Product
+      tags:
+      - Products
+    put:
+      consumes:
+      - application/json
+      description: Update details of a Product by id
+      parameters:
+      - description: Product id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Product data
+        in: body
+        name: Product
+        required: true
+        schema:
+          $ref: '#/definitions/dto.ProductDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.ProductDTO'
+        "400":
+          description: Invalid data
+          schema:
+            type: string
+        "404":
+          description: Product not found
+          schema:
+            type: string
+      summary: Update a Product
+      tags:
+      - Products
 swagger: "2.0"

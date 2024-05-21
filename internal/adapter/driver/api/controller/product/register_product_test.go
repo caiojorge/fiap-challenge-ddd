@@ -3,6 +3,7 @@ package controller
 import (
 	"bytes"
 	"context"
+	"encoding/json"
 	"errors"
 	"net/http"
 	"net/http/httptest"
@@ -12,13 +13,12 @@ import (
 	portsrepository "github.com/caiojorge/fiap-challenge-ddd/internal/core/application/ports/repository"
 	"github.com/caiojorge/fiap-challenge-ddd/internal/core/domain/entity"
 	"github.com/gin-gonic/gin"
-	"github.com/go-playground/assert/v2"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestRegisterProductController(t *testing.T) {
 	repo := NewMockProductRepository()
 	mock := NewMockRegisterProductUseCase(repo)
-
 	controller := NewRegisterProductController(context.Background(), mock)
 
 	// Set Gin to test mode
@@ -51,28 +51,24 @@ func TestRegisterProductController(t *testing.T) {
 	assert.Equal(t, `{"id":"1","name":"Lanche XPTO","description":"Pão, carne, queijo e presunto","category":"Lanche","price":100}`, w.Body.String())
 }
 
-func TestPostRegisterCustomer(t *testing.T) {
-	repo := NewMockProductRepository()
-	mock := NewMockRegisterProductUseCase(repo)
+func TestFindAllProductsController(t *testing.T) {
 
-	controller := NewRegisterProductController(context.Background(), mock)
+	repo := NewMockProductRepository()
+	mock := NewMockFindAllProductsUseCase(repo)
+	controller := NewFindAllProductController(context.Background(), mock)
 
 	// Set Gin to test mode
 	gin.SetMode(gin.TestMode)
 
 	// Initialize the router
 	r := gin.Default()
-	r.POST("/register", controller.PostRegisterProduct)
+	r.GET("/products", controller.GetAllProducts)
 
-	// Create a JSON body
-	requestBody := bytes.NewBuffer([]byte(`{"cpf":"123.456.789-09", "name":"John Doe","email":"johndoe@example.com"}`))
-
-	// Create the HTTP request with JSON body
-	req, err := http.NewRequest("POST", "/register", requestBody)
+	// Create a new HTTP request
+	req, err := http.NewRequest("GET", "/products", nil)
 	if err != nil {
 		t.Fatalf("Couldn't create request: %v\n", err)
 	}
-	req.Header.Set("Content-Type", "application/json")
 
 	// Create a response recorder
 	w := httptest.NewRecorder()
@@ -82,7 +78,102 @@ func TestPostRegisterCustomer(t *testing.T) {
 
 	// Check the response
 	assert.Equal(t, http.StatusOK, w.Code)
-	//assert.Contains(t, w.Body.String(), "customer created John Doe", "Response body should contain correct customer name")
+
+	// compare the response with the expected result
+	assert.Equal(t, `[{"id":"1","name":"Lanche XPTO","description":"Pão, carne, queijo e presunto","category":"Lanche","price":100}]`, w.Body.String())
+}
+
+func TestFindProductByIDController(t *testing.T) {
+
+	repo := NewMockProductRepository()
+	mock := NewMockFindProductByIDUseCase(repo)
+	controller := NewFindProductByIDController(context.Background(), mock)
+
+	// Set Gin to test mode
+	gin.SetMode(gin.TestMode)
+
+	// Initialize the router
+	r := gin.Default()
+	r.GET("/products/:id", controller.GetProductByID)
+
+	// Create a new HTTP request
+	req, err := http.NewRequest("GET", "/products/1", nil)
+	if err != nil {
+		t.Fatalf("Couldn't create request: %v\n", err)
+	}
+
+	// Create a response recorder
+	w := httptest.NewRecorder()
+
+	// Perform the request
+	r.ServeHTTP(w, req)
+
+	// Check the response
+	assert.Equal(t, http.StatusOK, w.Code)
+
+	var result entity.Product
+	err = json.Unmarshal(w.Body.Bytes(), &result)
+	assert.Nil(t, err)
+
+	expected := entity.Product{
+		ID:          "1",
+		Name:        "Lanche XPTO",
+		Description: "Pão, carne, queijo e presunto",
+		Category:    "Lanche",
+		Price:       100,
+	}
+
+	assert.Equal(t, result, expected)
+
+	// compare the response with the expected result
+	//assert.Equal(t, `[{"id":"1","name":"Lanche XPTO","description":"Pão, carne, queijo e presunto","category":"Lanche","price":100}]`, w.Body.String())
+}
+
+type MockFindProductByIDUseCase struct {
+	repository portsrepository.ProductRepository
+}
+
+func NewMockFindProductByIDUseCase(repository portsrepository.ProductRepository) *MockFindProductByIDUseCase {
+	return &MockFindProductByIDUseCase{
+		repository: repository,
+	}
+}
+
+func (m *MockFindProductByIDUseCase) FindProductByID(ctx context.Context, id string) (*entity.Product, error) {
+	product := entity.Product{
+		ID:          id,
+		Name:        "Lanche XPTO",
+		Description: "Pão, carne, queijo e presunto",
+		Category:    "Lanche",
+		Price:       100,
+	}
+
+	return &product, nil
+}
+
+type MockFindAllProductsUseCase struct {
+	repository portsrepository.ProductRepository
+}
+
+func NewMockFindAllProductsUseCase(repository portsrepository.ProductRepository) *MockFindAllProductsUseCase {
+	return &MockFindAllProductsUseCase{
+		repository: repository,
+	}
+}
+
+func (m *MockFindAllProductsUseCase) FindAllProducts(ctx context.Context) ([]*entity.Product, error) {
+	product := entity.Product{
+		ID:          "1",
+		Name:        "Lanche XPTO",
+		Description: "Pão, carne, queijo e presunto",
+		Category:    "Lanche",
+		Price:       100,
+	}
+
+	var products []*entity.Product
+	products = append(products, &product)
+
+	return products, nil
 }
 
 type MockRegisterProductUseCase struct {
@@ -172,4 +263,38 @@ func (repo *MockProductRepository) Delete(ctx context.Context, id string) error 
 
 	delete(repo.products, id)
 	return nil
+}
+
+// Find simula a recuperação de um cliente pelo ID.
+func (repo *MockProductRepository) FindByName(ctx context.Context, name string) (*entity.Product, error) {
+	repo.mu.Lock()
+	defer repo.mu.Unlock()
+
+	for _, product := range repo.products {
+		if product.Name == name {
+			return product, nil
+		}
+	}
+
+	return nil, errors.New("product not found")
+}
+
+func (repo *MockProductRepository) FindByCategory(ctx context.Context, category string) ([]*entity.Product, error) {
+	repo.mu.Lock()
+	defer repo.mu.Unlock()
+
+	var products []*entity.Product
+
+	for _, product := range repo.products {
+		if product.Category == category {
+			//return product, nil
+			products = append(products, product)
+		}
+	}
+
+	if len(products) > 0 {
+		return products, nil
+	}
+
+	return nil, errors.New("product not found")
 }

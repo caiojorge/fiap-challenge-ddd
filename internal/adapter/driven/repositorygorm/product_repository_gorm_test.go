@@ -62,6 +62,11 @@ func TestProdcut(t *testing.T) {
 	assert.NotNil(t, product2)
 	assert.Equal(t, product, product2)
 
+	product2, err = repo.FindByName(ctx, product.GetName())
+	assert.Nil(t, err)
+	assert.NotNil(t, product2)
+	assert.Equal(t, product, product2)
+
 	err = repo.Delete(ctx, product.GetID())
 	assert.Nil(t, err)
 

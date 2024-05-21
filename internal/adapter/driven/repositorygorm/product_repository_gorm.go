@@ -24,6 +24,7 @@ func NewProductRepositoryGorm(db *gorm.DB, converter converter.Converter[entity.
 	}
 }
 
+// Create creates a new product. It returns an error if something goes wrong.
 func (r *ProductRepositoryGorm) Create(ctx context.Context, entity *entity.Product) error {
 	fmt.Println("repositorygorm: Criando produto: " + entity.GetID())
 	model := r.converter.FromEntity(entity)
@@ -96,4 +97,38 @@ func (r *ProductRepositoryGorm) Delete(ctx context.Context, id string) error {
 	}
 
 	return nil
+}
+
+func (r *ProductRepositoryGorm) FindByName(ctx context.Context, name string) (*entity.Product, error) {
+	var productModel model.Product
+	result := r.DB.Model(&model.Product{}).Where("name = ?", name).First(&productModel)
+	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return nil, nil
+		}
+		return nil, result.Error
+	}
+
+	entity := r.converter.ToEntity(&productModel)
+
+	return entity, nil
+}
+
+func (r *ProductRepositoryGorm) FindByCategory(ctx context.Context, category string) ([]*entity.Product, error) {
+	var productModel []model.Product
+	result := r.DB.Model(&model.Product{}).Where("category = ?", category).Find(&productModel)
+	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return nil, nil
+		}
+		return nil, result.Error
+	}
+
+	var entities []*entity.Product
+	for _, product := range productModel {
+		entity := r.converter.ToEntity(&product)
+		entities = append(entities, entity)
+	}
+
+	return entities, nil
 }
