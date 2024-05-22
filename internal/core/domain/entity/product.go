@@ -2,6 +2,8 @@ package entity
 
 import (
 	"errors"
+
+	"github.com/caiojorge/fiap-challenge-ddd/internal/shared"
 )
 
 type Product struct {
@@ -12,10 +14,28 @@ type Product struct {
 	Category    string
 }
 
-func NewProduct(id, name, description, category string, price float64) (*Product, error) {
+func ConvertProduct(id, name, description, category string, price float64) (*Product, error) {
 
 	product := &Product{
 		ID:          id,
+		Name:        name,
+		Description: description,
+		Price:       price,
+		Category:    category,
+	}
+
+	err := product.Validate()
+	if err != nil {
+		return nil, err
+	}
+
+	return product, nil
+}
+
+func NewProduct(name, description, category string, price float64) (*Product, error) {
+
+	product := &Product{
+		ID:          shared.NewIDGenerator(),
 		Name:        name,
 		Description: description,
 		Price:       price,

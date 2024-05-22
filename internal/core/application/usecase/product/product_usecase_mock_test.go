@@ -13,7 +13,7 @@ import (
 
 func TestProductRegisterAndUpdater(t *testing.T) {
 
-	product, err := entity.NewProduct(shared.NewIDGenerator(), "Lanche XPTO", "Pão queijo e carne", "Lanche", 30.00)
+	product, err := entity.ConvertProduct(shared.NewIDGenerator(), "Lanche XPTO", "Pão queijo e carne", "Lanche", 30.00)
 	assert.Nil(t, err)
 	assert.NotNil(t, product)
 

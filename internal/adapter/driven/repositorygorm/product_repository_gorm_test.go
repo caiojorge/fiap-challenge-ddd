@@ -34,7 +34,7 @@ func TestProdcut(t *testing.T) {
 	id := shared.NewIDGenerator()
 	assert.NotEmpty(t, id)
 
-	product, err := entity.NewProduct(id, "Lanche XPTO", "Pão queijo e carne", "Lanche", 30.00)
+	product, err := entity.ConvertProduct(id, "Lanche XPTO", "Pão queijo e carne", "Lanche", 30.00)
 	assert.Nil(t, err)
 	assert.NotNil(t, product)
 	assert.NotEmpty(t, product.GetID())

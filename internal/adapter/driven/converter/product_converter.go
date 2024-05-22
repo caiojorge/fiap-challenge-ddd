@@ -24,6 +24,6 @@ func (pc *ProductConverter) FromEntity(entity *entity.Product) *model.Product {
 
 // TODO: voltar aqui para avaliar se é melhor retornar um erro tbm
 func (pc *ProductConverter) ToEntity(model *model.Product) *entity.Product {
-	product, _ := entity.NewProduct(model.ID, model.Name, model.Description, model.Category, model.Price)
+	product, _ := entity.ConvertProduct(model.ID, model.Name, model.Description, model.Category, model.Price)
 	return product
 }
