@@ -55,7 +55,7 @@ func (r *RegisterProductController) PostRegisterProduct(c *gin.Context) {
 
 	// Nesse cenário, o ID informado será ignorado e um novo ID será gerado
 	fmt.Println("controller: Criando product: " + dto.Name)
-	err = r.usecase.RegisterProduct(r.ctx, *entity)
+	err = r.usecase.RegisterProduct(r.ctx, entity)
 	if err != nil {
 		if err == ErrAlreadyExists {
 			c.JSON(http.StatusConflict, gin.H{"error": "product already exists"})

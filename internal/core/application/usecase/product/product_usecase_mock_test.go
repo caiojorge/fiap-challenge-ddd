@@ -27,7 +27,7 @@ func TestProductRegisterAndUpdater(t *testing.T) {
 	register := NewProductRegister(repo)
 	assert.NotNil(t, register)
 
-	err = register.RegisterProduct(context.Background(), *product)
+	err = register.RegisterProduct(context.Background(), product)
 	assert.Nil(t, err)
 
 	product2, err := repo.Find(context.Background(), product.ID)

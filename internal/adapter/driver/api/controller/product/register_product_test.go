@@ -186,7 +186,7 @@ func NewMockRegisterProductUseCase(repository portsrepository.ProductRepository)
 	}
 }
 
-func (m *MockRegisterProductUseCase) RegisterProduct(ctx context.Context, customer entity.Product) error {
+func (m *MockRegisterProductUseCase) RegisterProduct(ctx context.Context, customer *entity.Product) error {
 	return nil
 }
 

@@ -7,5 +7,5 @@ import (
 )
 
 type RegisterProductUseCase interface {
-	RegisterProduct(ctx context.Context, customer entity.Product) error
+	RegisterProduct(ctx context.Context, customer *entity.Product) error
 }
