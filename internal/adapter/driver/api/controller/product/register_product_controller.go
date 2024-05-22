@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driver/api/dto"
@@ -63,6 +64,10 @@ func (r *RegisterProductController) PostRegisterProduct(c *gin.Context) {
 		}
 		return
 	}
+
+	dto.FromEntity(*entity)
+
+	log.Println("Product created: ", dto.ID)
 
 	c.JSON(http.StatusOK, dto)
 }

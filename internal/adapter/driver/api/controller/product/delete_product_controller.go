@@ -21,8 +21,8 @@ func NewDeleteProductController(ctx context.Context, usecase portsusecase.Delete
 }
 
 // DeleteProduct updates a Product by id
-// @Summary Update a Product
-// @Description Update details of a Product by id
+// @Summary Delete a Product
+// @Description Delete details of a Product by id
 // @Tags Products
 // @Accept  json
 // @Produce  json

@@ -2,6 +2,7 @@ package controller
 
 import (
 	"context"
+	"log"
 	"net/http"
 
 	"github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driver/api/dto"
@@ -21,37 +22,43 @@ func NewFindProductByCategoryController(ctx context.Context, usecase portsusecas
 	}
 }
 
-// @Summary Get a Product
-// @Description Get details of a Product by id
+// @Summary Get a Product by category
+// @Description Get details of a Product by category
 // @Tags Products
 // @Accept  json
 // @Produce  json
-// @Param id path string true "Product id"
+// @Param id path string true "Product category"
 // @Success 200 {object} dto.ProductDTO
 // @Failure 404 {object} string "Product not found"
 // @Failure 500 {object} string "Product not found"
-// @Router /products/{id} [get]
+// @Router /products/category/{id} [get]
 func (cr *FindProductByCategoryController) GetProductByCategory(c *gin.Context) {
 	//id, ok := c.GetQuery("id")
-	category := c.Param("category")
-
+	category := c.Param("id")
 	if category == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid data"})
 		return
 	}
 
-	product, err := cr.usecase.FindProductByCategory(cr.ctx, category)
+	log.Println("category: ", category)
+
+	products, err := cr.usecase.FindProductByCategory(cr.ctx, category)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	dto := dto.ProductDTO{}
-	if product == nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Product not found"})
+	if len(products) == 0 {
+		c.JSON(http.StatusNotFound, gin.H{"error": "No products found"})
 		return
 	}
 
-	dto.FromEntity(*product)
-	c.JSON(http.StatusOK, dto)
+	var dtoproducts []dto.ProductDTO
+	dto := dto.ProductDTO{}
+	for _, entity := range products {
+		dto.FromEntity(*entity)
+		dtoproducts = append(dtoproducts, dto)
+	}
+
+	c.JSON(http.StatusOK, dtoproducts)
 }

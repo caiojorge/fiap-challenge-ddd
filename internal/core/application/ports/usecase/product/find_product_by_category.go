@@ -7,5 +7,5 @@ import (
 )
 
 type FindProductByCategoryUseCase interface {
-	FindProductByCategory(ctx context.Context, category string) (*entity.Product, error)
+	FindProductByCategory(ctx context.Context, category string) ([]*entity.Product, error)
 }

@@ -65,6 +65,9 @@ func (s *GinServer) Initialization() *GinServer {
 		findByIDController := controllerproduct.NewFindProductByIDController(ctx, usecaseproduct.NewProductFindByID(repo))
 		p.GET("/:id", findByIDController.GetProductByID)
 
+		findByCategoryController := controllerproduct.NewFindProductByCategoryController(ctx, usecaseproduct.NewProductFindByCategory(repo))
+		p.GET("/category/:id", findByCategoryController.GetProductByCategory)
+
 		updateController := controllerproduct.NewUpdateProductController(ctx, usecaseproduct.NewProductUpdate(repo))
 		p.PUT("/:id", updateController.PutUpdateProduct)
 
