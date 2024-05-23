@@ -3,6 +3,7 @@ package entity
 import (
 	"errors"
 
+	"github.com/caiojorge/fiap-challenge-ddd/internal/core/domain/valueobject"
 	"github.com/caiojorge/fiap-challenge-ddd/internal/shared"
 )
 
@@ -11,6 +12,7 @@ type OrderItem struct {
 	ProductID string
 	Quantity  int
 	Price     float64
+	Status    string
 }
 
 // NewOrderItem creates a new OrderItem
@@ -20,6 +22,7 @@ func NewOrderItem(productID string, quantity int, price float64) (*OrderItem, er
 		ProductID: productID,
 		Quantity:  quantity,
 		Price:     price,
+		Status:    valueobject.OrderItemStatusConfirmed,
 	}
 
 	err := item.Validate()
@@ -44,4 +47,8 @@ func (i *OrderItem) Validate() error {
 	}
 
 	return nil
+}
+
+func (i *OrderItem) Cancel() {
+	i.Status = valueobject.OrderItemStatusCanceled
 }

@@ -3,6 +3,7 @@ package entity
 import (
 	"errors"
 
+	"github.com/caiojorge/fiap-challenge-ddd/internal/core/domain/valueobject"
 	"github.com/caiojorge/fiap-challenge-ddd/internal/shared"
 	"github.com/caiojorge/fiap-challenge-ddd/internal/shared/validator"
 )
@@ -19,6 +20,7 @@ func OrderInit(customerCPF string) *Order {
 	order := Order{
 		ID:          shared.NewIDGenerator(),
 		CustomerCPF: customerCPF,
+		Status:      valueobject.OrderStatusConfirmed,
 	}
 
 	return &order
@@ -29,6 +31,7 @@ func NewOrder(cpf string, items []*OrderItem) (*Order, error) {
 		ID:          shared.NewIDGenerator(),
 		CustomerCPF: cpf,
 		Items:       items,
+		Status:      valueobject.OrderStatusConfirmed,
 	}
 
 	err := order.Validate()
@@ -40,6 +43,7 @@ func NewOrder(cpf string, items []*OrderItem) (*Order, error) {
 }
 
 func (o *Order) Validate() error {
+
 	if o.CustomerCPF != "" {
 		cpfValidator := validator.CPFValidator{}
 
@@ -68,8 +72,27 @@ func (o *Order) RemoveItem(item *OrderItem) {
 	}
 }
 
+// CalculateTotal se os itens forem confirmados
 func (o *Order) CalculateTotal() {
 	for _, item := range o.Items {
-		o.Total += item.Price
+		if item.Status == valueobject.OrderItemStatusConfirmed {
+			o.Total += item.Price
+		}
 	}
+}
+
+func (o *Order) Pay() {
+	o.Status = valueobject.OrderStatusPaid
+}
+
+func (o *Order) Prepare() {
+	o.Status = valueobject.OrderStatusPreparing
+}
+
+func (o *Order) Deliver() {
+	o.Status = valueobject.OrderStatusDelivered
+}
+
+func (o *Order) Cancel() {
+	o.Status = valueobject.OrderStatusCanceled
 }
