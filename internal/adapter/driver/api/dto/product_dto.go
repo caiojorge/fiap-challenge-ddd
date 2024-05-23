@@ -10,7 +10,7 @@ type ProductDTO struct {
 	Price       float64 `json:"price"`
 }
 
-func (dto ProductDTO) ToEntity() (*entity.Product, error) {
+func (dto *ProductDTO) ToEntity() (*entity.Product, error) {
 	return &entity.Product{
 		ID:          dto.ID,
 		Name:        dto.Name,
