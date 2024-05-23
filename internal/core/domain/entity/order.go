@@ -2,6 +2,7 @@ package entity
 
 import (
 	"errors"
+	"time"
 
 	"github.com/caiojorge/fiap-challenge-ddd/internal/core/domain/valueobject"
 	"github.com/caiojorge/fiap-challenge-ddd/internal/shared"
@@ -14,13 +15,21 @@ type Order struct {
 	Total       float64
 	Status      string
 	CustomerCPF string
+	CreatedAt   time.Time
 }
 
 func OrderInit(customerCPF string) *Order {
+
+	location, err := time.LoadLocation("America/Sao_Paulo")
+	if err != nil {
+		panic("failed to load location")
+	}
+
 	order := Order{
 		ID:          shared.NewIDGenerator(),
 		CustomerCPF: customerCPF,
 		Status:      valueobject.OrderStatusConfirmed,
+		CreatedAt:   time.Now().In(location),
 	}
 
 	return &order
@@ -40,6 +49,10 @@ func NewOrder(cpf string, items []*OrderItem) (*Order, error) {
 	}
 
 	return &order, nil
+}
+
+func (o *Order) GetID() string {
+	return o.ID
 }
 
 func (o *Order) Validate() error {

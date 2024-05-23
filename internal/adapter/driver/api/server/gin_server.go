@@ -9,9 +9,11 @@ import (
 	"github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driven/model"
 	"github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driven/repositorygorm"
 	controllercustomer "github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driver/api/controller/customer"
+	controllerorder "github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driver/api/controller/order"
 	controllerproduct "github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driver/api/controller/product"
 	"github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driver/api/infra"
 	usecasecustomer "github.com/caiojorge/fiap-challenge-ddd/internal/core/application/usecase/customer"
+	usecaseorder "github.com/caiojorge/fiap-challenge-ddd/internal/core/application/usecase/order"
 	usecaseproduct "github.com/caiojorge/fiap-challenge-ddd/internal/core/application/usecase/product"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -71,6 +73,14 @@ func (s *GinServer) Initialization() *GinServer {
 		updateController := controllerproduct.NewUpdateProductController(ctx, usecaseproduct.NewProductUpdate(repo))
 		p.PUT("/:id", updateController.PutUpdateProduct)
 
+	}
+
+	o := s.router.Group("/kitchencontrol/api/v1/orders")
+	{
+		converter := converter.NewOrderConverter()
+		repo := repositorygorm.NewOrderRepositoryGorm(db, converter)
+		orderController := controllerorder.NewCreateOrderController(ctx, usecaseorder.NewOrderCreate(repo))
+		o.POST("/", orderController.PostCreateOrder)
 	}
 
 	return s
