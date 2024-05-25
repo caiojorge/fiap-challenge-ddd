@@ -33,6 +33,12 @@ func NewOrderItem(productID string, quantity int, price float64) (*OrderItem, er
 	return &item, nil
 }
 
+func (i *OrderItem) ConfirmItem() {
+	i.ID = shared.NewIDGenerator()
+	i.Status = valueobject.OrderItemStatusConfirmed
+
+}
+
 func (i *OrderItem) Validate() error {
 	if i.ProductID == "" {
 		return errors.New("product id is required")

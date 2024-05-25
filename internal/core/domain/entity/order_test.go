@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/caiojorge/fiap-challenge-ddd/internal/core/domain/valueobject"
+	"github.com/caiojorge/fiap-challenge-ddd/internal/shared"
 	"github.com/caiojorge/fiap-challenge-ddd/internal/shared/validator"
 	"github.com/stretchr/testify/assert"
 )
@@ -180,6 +181,47 @@ func TestOrderWithNoRegistration(t *testing.T) {
 	assert.Nil(t, err)
 
 	err = order.Validate()
+	assert.Nil(t, err)
+
+}
+
+func TestConfirmedOrder(t *testing.T) {
+	cpf := "75419654059"
+
+	lanche := Product{
+		ID:          shared.NewIDGenerator(),
+		Name:        "Burger Kong",
+		Description: "Pão, carne e queijo",
+		Category:    "lanche",
+		Price:       50.0,
+	}
+
+	refri := Product{
+		ID:          shared.NewIDGenerator(),
+		Name:        "Pepsicola",
+		Description: "Peptococa",
+		Category:    "refrigerante",
+		Price:       10.0,
+	}
+
+	item := OrderItem{
+		ProductID: lanche.ID,
+		Quantity:  1,
+		Price:     lanche.Price,
+	}
+
+	item2 := OrderItem{
+		ProductID: refri.ID,
+		Quantity:  1,
+		Price:     lanche.Price,
+	}
+
+	order := Order{
+		Items:       []*OrderItem{&item, &item2},
+		CustomerCPF: cpf,
+	}
+
+	err := order.ConfirmOrder()
 	assert.Nil(t, err)
 
 }

@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"context"
-	"fmt"
 
 	portsrepository "github.com/caiojorge/fiap-challenge-ddd/internal/core/application/ports/repository"
 	"github.com/caiojorge/fiap-challenge-ddd/internal/core/domain/entity"
@@ -21,8 +20,8 @@ func NewOrderCreate(repository portsrepository.OrderRepository) *OrderCreateUseC
 // CreateOrder registra um novo cliente.
 func (cr *OrderCreateUseCase) CreateOrder(ctx context.Context, order *entity.Order) error {
 
-	fmt.Println("usecase: Criando produto: " + order.ID)
-	// Cria o cliente
+	order.ConfirmOrder()
+
 	err := cr.repository.Create(ctx, order)
 	if err != nil {
 		return err

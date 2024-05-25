@@ -26,7 +26,7 @@ func TestOrderConverter_FromEntity(t *testing.T) {
 	assert.Equal(t, entityOrder.ID, modelOrder.ID)
 	assert.Equal(t, entityOrder.Total, modelOrder.Total)
 	assert.Equal(t, entityOrder.Status, modelOrder.Status)
-	assert.Equal(t, entityOrder.CustomerCPF, modelOrder.CustomerCPF)
+	assert.Equal(t, entityOrder.CustomerCPF, *modelOrder.CustomerCPF)
 	assert.Len(t, modelOrder.Items, len(entityOrder.Items))
 
 	for i, item := range modelOrder.Items {
@@ -40,12 +40,13 @@ func TestOrderConverter_FromEntity(t *testing.T) {
 }
 
 func TestOrderConverter_ToEntity(t *testing.T) {
+	customerCPF := "12345678900"
 	converter := NewOrderConverter()
 	modelOrder := &model.Order{
 		ID:          "order123",
 		Total:       100.0,
 		Status:      "pending",
-		CustomerCPF: "12345678900",
+		CustomerCPF: &customerCPF,
 		Items: []*model.OrderItem{
 			{ID: "item1", ProductID: "product1", Quantity: 2, Price: 50.0, Status: "new"},
 		},
@@ -56,7 +57,7 @@ func TestOrderConverter_ToEntity(t *testing.T) {
 	assert.Equal(t, modelOrder.ID, entityOrder.ID)
 	assert.Equal(t, modelOrder.Total, entityOrder.Total)
 	assert.Equal(t, modelOrder.Status, entityOrder.Status)
-	assert.Equal(t, modelOrder.CustomerCPF, entityOrder.CustomerCPF)
+	assert.Equal(t, *modelOrder.CustomerCPF, entityOrder.CustomerCPF)
 	assert.Len(t, entityOrder.Items, len(modelOrder.Items))
 
 	for i, item := range entityOrder.Items {

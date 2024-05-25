@@ -8,6 +8,10 @@ import (
 
 type CPFValidator struct{}
 
+func NewCPFValidator() *CPFValidator {
+	return &CPFValidator{}
+}
+
 func (v *CPFValidator) IsValid(cpf string) bool {
 	err := v.Validate(cpf)
 	return err == nil

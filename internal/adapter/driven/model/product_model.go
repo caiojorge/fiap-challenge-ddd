@@ -6,10 +6,10 @@ import (
 
 // Product representa um producto no banco de dados.
 type Product struct {
-	ID          string  `gorm:"primaryKey not null"`
-	Name        string  `gorm:"not null;unique;index:idx_name_category"`
-	Description string  `gorm:"not null"`
-	Category    string  `gorm:"not null"`
+	ID          string  `gorm:"type:char(36);primaryKey"`
+	Name        string  `gorm:"not null;unique;index:idx_name_product;type:varchar(255)"`
+	Description string  `gorm:"not null;type:varchar(255)"`
+	Category    string  `gorm:"not null;index:idx_category;type:varchar(255)"`
 	Price       float64 `gorm:"not null"`
 }
 

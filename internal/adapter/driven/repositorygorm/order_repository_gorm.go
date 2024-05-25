@@ -8,6 +8,7 @@ import (
 	"github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driven/converter"
 	"github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driven/model"
 	"github.com/caiojorge/fiap-challenge-ddd/internal/core/domain/entity"
+	"github.com/jinzhu/copier"
 	"gorm.io/gorm"
 )
 
@@ -25,9 +26,9 @@ func NewOrderRepositoryGorm(db *gorm.DB, converter converter.Converter[entity.Or
 
 // Create creates a new product. It returns an error if something goes wrong.
 func (r *OrderRepositoryGorm) Create(ctx context.Context, entity *entity.Order) error {
-	fmt.Println("repositorygorm: Criando order: " + entity.GetID())
-	model := r.converter.FromEntity(entity)
-
+	//model := r.converter.FromEntity(entity)
+	var model model.Order
+	copier.Copy(&model, entity)
 	return r.DB.Create(model).Error
 }
 

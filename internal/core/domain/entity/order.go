@@ -36,19 +36,49 @@ func OrderInit(customerCPF string) *Order {
 }
 
 func NewOrder(cpf string, items []*OrderItem) (*Order, error) {
+	location, err := time.LoadLocation("America/Sao_Paulo")
+	if err != nil {
+		panic("failed to load location")
+	}
 	order := Order{
 		ID:          shared.NewIDGenerator(),
 		CustomerCPF: cpf,
 		Items:       items,
 		Status:      valueobject.OrderStatusConfirmed,
+		CreatedAt:   time.Now().In(location),
 	}
 
-	err := order.Validate()
+	err = order.Validate()
 	if err != nil {
 		return nil, err
 	}
 
 	return &order, nil
+}
+
+func (o *Order) ConfirmOrder() error {
+
+	location, err := time.LoadLocation("America/Sao_Paulo")
+	if err != nil {
+		return errors.New("failed to load location")
+	}
+
+	o.ID = shared.NewIDGenerator()
+	o.Status = valueobject.OrderStatusConfirmed
+	o.CreatedAt = time.Now().In(location)
+
+	o.CalculateTotal()
+
+	for _, item := range o.Items {
+		item.ConfirmItem()
+	}
+
+	err = o.Validate()
+	if err != nil {
+		return errors.New("failed to validate order")
+	}
+
+	return nil
 }
 
 func (o *Order) GetID() string {
@@ -57,7 +87,7 @@ func (o *Order) GetID() string {
 
 func (o *Order) Validate() error {
 
-	if o.CustomerCPF != "" {
+	if o.CustomerCPF != "" && len(o.CustomerCPF) == 11 {
 		cpfValidator := validator.CPFValidator{}
 
 		err := cpfValidator.Validate(o.CustomerCPF)
@@ -85,7 +115,6 @@ func (o *Order) RemoveItem(item *OrderItem) {
 	}
 }
 
-// CalculateTotal se os itens forem confirmados
 func (o *Order) CalculateTotal() {
 	for _, item := range o.Items {
 		if item.Status == valueobject.OrderItemStatusConfirmed {

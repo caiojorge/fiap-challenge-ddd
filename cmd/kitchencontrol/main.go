@@ -1,8 +1,8 @@
 package main
 
 import (
+	"github.com/caiojorge/fiap-challenge-ddd/cmd/kitchencontrol/server"
 	"github.com/caiojorge/fiap-challenge-ddd/docs"
-	"github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driver/api/server"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )

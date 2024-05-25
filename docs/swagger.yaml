@@ -1,5 +1,23 @@
 basePath: /kitchencontrol/api/v1
 definitions:
+  dto.CreateOrderDTO:
+    properties:
+      cpf:
+        type: string
+      items:
+        items:
+          $ref: '#/definitions/dto.CreateOrderItemDTO'
+        type: array
+    type: object
+  dto.CreateOrderItemDTO:
+    properties:
+      price:
+        type: number
+      productid:
+        type: string
+      quantity:
+        type: integer
+    type: object
   dto.CustomerDTO:
     properties:
       cpf:
@@ -7,6 +25,34 @@ definitions:
       email:
         type: string
       name:
+        type: string
+    type: object
+  dto.OrderDTO:
+    properties:
+      customercpf:
+        type: string
+      id:
+        type: string
+      items:
+        items:
+          $ref: '#/definitions/dto.OrderItemDTO'
+        type: array
+      status:
+        type: string
+      total:
+        type: number
+    type: object
+  dto.OrderItemDTO:
+    properties:
+      id:
+        type: string
+      price:
+        type: number
+      productid:
+        type: string
+      quantity:
+        type: integer
+      status:
         type: string
     type: object
   dto.ProductDTO:
@@ -163,6 +209,40 @@ paths:
       summary: Update a customer
       tags:
       - Customers
+  /orders:
+    post:
+      consumes:
+      - application/json
+      description: Create Order in DB
+      parameters:
+      - description: cria nova Order
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateOrderDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.OrderDTO'
+        "400":
+          description: invalid data
+          schema:
+            type: string
+        "409":
+          description: Order already exists
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      summary: Create Order
+      tags:
+      - Orders
   /products:
     get:
       consumes:

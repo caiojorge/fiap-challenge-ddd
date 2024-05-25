@@ -6,12 +6,12 @@ import (
 	"time"
 
 	"github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driven/converter"
+	infra "github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driven/db"
 	"github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driven/model"
 	"github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driven/repositorygorm"
 	controllercustomer "github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driver/api/controller/customer"
 	controllerorder "github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driver/api/controller/order"
 	controllerproduct "github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driver/api/controller/product"
-	"github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driver/api/infra"
 	usecasecustomer "github.com/caiojorge/fiap-challenge-ddd/internal/core/application/usecase/customer"
 	usecaseorder "github.com/caiojorge/fiap-challenge-ddd/internal/core/application/usecase/order"
 	usecaseproduct "github.com/caiojorge/fiap-challenge-ddd/internal/core/application/usecase/product"

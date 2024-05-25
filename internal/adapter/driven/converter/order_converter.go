@@ -17,7 +17,7 @@ func (pc *OrderConverter) FromEntity(entity *entity.Order) *model.Order {
 		Items:       pc.fromEntityItems(entity.Items),
 		Total:       entity.Total,
 		Status:      entity.Status,
-		CustomerCPF: entity.CustomerCPF,
+		CustomerCPF: &entity.CustomerCPF,
 		CreatedAt:   entity.CreatedAt,
 	}
 }
@@ -28,7 +28,7 @@ func (pc *OrderConverter) ToEntity(model *model.Order) *entity.Order {
 		Items:       pc.toEntityItems(model.Items),
 		Total:       model.Total,
 		Status:      model.Status,
-		CustomerCPF: model.CustomerCPF,
+		CustomerCPF: *model.CustomerCPF,
 		CreatedAt:   model.CreatedAt,
 	}
 }

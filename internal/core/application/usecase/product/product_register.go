@@ -35,7 +35,7 @@ func (cr *ProductRegisterUseCase) RegisterProduct(ctx context.Context, product *
 	}
 
 	fmt.Println("usecase: Criando produto: " + product.GetName())
-	// Cria o cliente
+	product.DefineID()
 	err = cr.repository.Create(ctx, product)
 	if err != nil {
 		return err

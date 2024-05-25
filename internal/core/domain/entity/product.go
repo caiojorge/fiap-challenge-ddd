@@ -50,6 +50,10 @@ func NewProduct(name, description, category string, price float64) (*Product, er
 	return product, nil
 }
 
+func (p *Product) DefineID() {
+	p.ID = shared.NewIDGenerator()
+}
+
 func (p *Product) Validate() error {
 
 	if p.Name == "" {

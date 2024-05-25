@@ -8,9 +8,9 @@ import (
 
 // Customer representa um cliente no banco de dados.
 type Customer struct {
-	CPF   string `gorm:"primaryKey"`
-	Name  string
-	Email string
+	CPF   string `gorm:"primaryKey;type:char(11);not null"`
+	Name  string `gorm:"type:varchar(255);not null"`
+	Email string `gorm:"type:varchar(255);not null"`
 }
 
 // Validate verifica se os campos obrigatórios de um cliente estão preenchidos.
