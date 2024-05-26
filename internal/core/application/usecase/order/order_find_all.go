@@ -17,7 +17,7 @@ func NewCustomerFindAll(repository ports.CustomerRepository) *CustomerFindAllUse
 	}
 }
 
-// RegisterCustomer registra um novo cliente.
+// FindAllCustomers busca todas as ordens
 func (cr *CustomerFindAllUseCase) FindAllCustomers(ctx context.Context) ([]*entity.Customer, error) {
 
 	customers, err := cr.repository.FindAll(ctx)

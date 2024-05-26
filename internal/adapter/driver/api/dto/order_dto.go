@@ -1,6 +1,10 @@
 package dto
 
-import "github.com/caiojorge/fiap-challenge-ddd/internal/core/domain/entity"
+import (
+	"time"
+
+	"github.com/caiojorge/fiap-challenge-ddd/internal/core/domain/entity"
+)
 
 type OrderDTO struct {
 	ID          string          `json:"id"`
@@ -8,6 +12,7 @@ type OrderDTO struct {
 	Total       float64         `json:"total"`
 	Status      string          `json:"status"`
 	CustomerCPF string          `json:"customercpf"`
+	CreatedAt   time.Time       `json:"created_at"`
 }
 
 func (dto *OrderDTO) ToEntity() (*entity.Order, error) {
@@ -29,6 +34,7 @@ func (dto *OrderDTO) FromEntity(order entity.Order) {
 	dto.Status = order.Status
 	dto.CustomerCPF = order.CustomerCPF
 	dto.Total = order.Total
+	dto.CreatedAt = order.CreatedAt
 }
 
 func (dto *OrderDTO) fromOrderItemDTO() []*entity.OrderItem {

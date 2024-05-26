@@ -10,11 +10,11 @@ import (
 )
 
 type FindAllController struct {
-	usecase portsusecase.CreateOrderUseCase
+	usecase portsusecase.FindAllOrderUseCase
 	ctx     context.Context
 }
 
-func NewFindAllController(ctx context.Context, usecase portsusecase.CreateOrderUseCase) *FindAllController {
+func NewFindAllController(ctx context.Context, usecase portsusecase.FindAllOrderUseCase) *FindAllController {
 	return &FindAllController{
 		usecase: usecase,
 		ctx:     ctx,
@@ -28,27 +28,33 @@ func NewFindAllController(ctx context.Context, usecase portsusecase.CreateOrderU
 // @Accept  json
 // @Produce  json
 // @Success 200 {array} dto.OrderDTO
-// @Failure 500 {object} map[string]string "Internal Server Error"
-// @Router /customers [get]
+// @Failure 400 {object} "{'error': 'Invalid data'}" "Bad Request"
+// @Failure 404 {object} "{'error': 'No orders found'}" "Not Found"
+// @Router /orders [get]
 func (r *FindAllController) GetAllOrders(c *gin.Context) {
 
-	customers, err := r.usecase.FindAllCustomers(cr.ctx)
+	orders, err := r.usecase.FindAllOrders(r.ctx)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid data"})
 		return
 	}
 
-	if len(customers) == 0 {
-		c.JSON(http.StatusNotFound, gin.H{"error": "No customers found"})
+	if len(orders) == 0 {
+		c.JSON(http.StatusNotFound, gin.H{"error": "No orders found"})
 		return
 	}
 
-	var dtoCustomers []dto.CustomerDTO
-	dto := dto.CustomerDTO{}
-	for _, customer := range customers {
-		dto.FromEntity(*customer)
-		dtoCustomers = append(dtoCustomers, dto)
+	var dtos []dto.OrderDTO
+	dto := dto.OrderDTO{}
+	for _, order := range orders {
+		dto.FromEntity(*order)
+		dtos = append(dtos, dto)
 	}
+	// err = copier.Copy(&dtos, &orders)
+	// if err != nil {
+	// 	c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid data"})
+	// 	return
+	// }
 
-	c.JSON(http.StatusOK, dtoCustomers)
+	c.JSON(http.StatusOK, dtos)
 }
