@@ -571,9 +571,6 @@ const docTemplate = `{
         "dto.CreateOrderItemDTO": {
             "type": "object",
             "properties": {
-                "price": {
-                    "type": "number"
-                },
                 "productid": {
                     "type": "string"
                 },

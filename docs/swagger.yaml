@@ -11,8 +11,6 @@ definitions:
     type: object
   dto.CreateOrderItemDTO:
     properties:
-      price:
-        type: number
       productid:
         type: string
       quantity:

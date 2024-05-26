@@ -38,7 +38,7 @@ func (c *CPF) Validate() error {
 func (c *CPF) Format() (string, error) {
 	cpf := c.Value
 
-	cpfFormatter, err := formatter.FormatCPF(cpf)
+	cpfFormatter, err := formatter.PutMaskOnCPF(cpf)
 	if err != nil {
 		return "", err
 	}
@@ -49,5 +49,5 @@ func (c *CPF) Format() (string, error) {
 func (c *CPF) RemoveFormat() string {
 	cpf := c.Value
 
-	return formatter.RemoveFormatFromCPF(cpf)
+	return formatter.RemoveMaksFromCPF(cpf)
 }

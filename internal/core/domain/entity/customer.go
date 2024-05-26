@@ -22,10 +22,6 @@ func IdentifyCustomer(cpf *valueobject.CPF) (*Customer, error) {
 
 	}
 
-	if cpf.GetValue() == "" {
-		return nil, errors.New("CPF is required")
-	}
-
 	return &Customer{
 		CPF: *cpf,
 	}, nil

@@ -56,6 +56,9 @@ func NewOrder(cpf string, items []*OrderItem) (*Order, error) {
 	return &order, nil
 }
 
+// ConfirmOrder confirma o pedido. Tem muita lógica de negócio aqui.
+// Toda preparação necessária, validação de cpf, cálculo do total e validação dos itens.
+// As regras aplicadas impactam apenas os dados da ordem / item.
 func (o *Order) ConfirmOrder() error {
 
 	location, err := time.LoadLocation("America/Sao_Paulo")
@@ -67,12 +70,14 @@ func (o *Order) ConfirmOrder() error {
 	o.Status = valueobject.OrderStatusConfirmed
 	o.CreatedAt = time.Now().In(location)
 
-	o.CalculateTotal()
-
 	for _, item := range o.Items {
 		item.ConfirmItem()
 	}
 
+	// Calcula o total do pedido se o item for confirmado
+	o.CalculateTotal()
+
+	// Valida o pedido
 	err = o.Validate()
 	if err != nil {
 		return errors.New("failed to validate order")

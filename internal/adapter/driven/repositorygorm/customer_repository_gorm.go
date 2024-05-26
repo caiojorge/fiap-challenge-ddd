@@ -8,6 +8,7 @@ import (
 	"github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driven/converter"
 	"github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driven/model"
 	"github.com/caiojorge/fiap-challenge-ddd/internal/core/domain/entity"
+	"github.com/caiojorge/fiap-challenge-ddd/internal/shared/formatter"
 	"gorm.io/gorm"
 )
 
@@ -38,10 +39,11 @@ func (r *CustomerRepositoryGorm) Update(ctx context.Context, entity *entity.Cust
 	return nil
 }
 
+// Find busca um cliente pelo CPF (sem máscara!)
 func (r *CustomerRepositoryGorm) Find(ctx context.Context, id string) (*entity.Customer, error) {
 	var customerModel model.Customer
-	fmt.Println("repositorygorm: Find cliente: " + id)
-	result := r.DB.Model(&model.Customer{}).Where("cpf = ?", id).First(&customerModel)
+	// sempre removo a mascara do cpf para buscar no banco
+	result := r.DB.Model(&model.Customer{}).Where("cpf = ?", formatter.RemoveMaksFromCPF(id)).First(&customerModel)
 	if result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 			return nil, nil

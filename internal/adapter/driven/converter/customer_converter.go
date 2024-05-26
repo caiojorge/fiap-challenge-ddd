@@ -11,7 +11,7 @@ import (
 
 func FromEntity(entity *entity.Customer) *model.Customer {
 
-	cpfWithoutNonDigits := formatter.RemoveFormatFromCPF(entity.GetCPF().Value)
+	cpfWithoutNonDigits := formatter.RemoveMaksFromCPF(entity.GetCPF().Value)
 
 	return &model.Customer{
 		CPF:   cpfWithoutNonDigits,
@@ -22,13 +22,21 @@ func FromEntity(entity *entity.Customer) *model.Customer {
 
 // TODO: voltar aqui para avaliar se é melhor retornar um erro tbm
 func ToEntity(model *model.Customer) *entity.Customer {
-	cpfWithNonDigits, err := formatter.FormatCPF(model.CPF)
+	// coloco a mascara no cpf qdo crio a entidade
+	cpfWithNonDigits, err := formatter.PutMaskOnCPF(model.CPF)
 
 	if err != nil {
 		return nil
 	}
 
 	cpf, _ := valueobject.NewCPF(cpfWithNonDigits)
-	customer, _ := entity.NewCustomer(*cpf, model.Name, model.Email)
+
+	var customer *entity.Customer
+
+	if model.Email == "" && model.Name == "" {
+		customer, _ = entity.IdentifyCustomer(cpf)
+	} else {
+		customer, _ = entity.NewCustomer(*cpf, model.Name, model.Email)
+	}
 	return customer
 }

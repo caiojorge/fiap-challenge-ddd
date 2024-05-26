@@ -39,6 +39,10 @@ func (i *OrderItem) ConfirmItem() {
 
 }
 
+func (i *OrderItem) UpdatePrice(price float64) {
+	i.Price = price
+}
+
 func (i *OrderItem) Validate() error {
 	if i.ProductID == "" {
 		return errors.New("product id is required")

@@ -36,50 +36,50 @@ func (s *GinServer) Initialization() *GinServer {
 	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
 	defer cancel()
 
+	customerRepo := repositorygorm.NewCustomerRepositoryGorm(db)
+	productConverter := converter.NewProductConverter()
+	productRepo := repositorygorm.NewProductRepositoryGorm(db, productConverter)
+	orderConverter := converter.NewOrderConverter()
+	orderRepo := repositorygorm.NewOrderRepositoryGorm(db, orderConverter)
+
 	g := s.router.Group("/kitchencontrol/api/v1/customers")
 	{
-		repo := repositorygorm.NewCustomerRepositoryGorm(db)
-
-		registerController := controllercustomer.NewRegisterCustomerController(ctx, usecasecustomer.NewCustomerRegister(repo))
+		registerController := controllercustomer.NewRegisterCustomerController(ctx, usecasecustomer.NewCustomerRegister(customerRepo))
 		g.POST("/", registerController.PostRegisterCustomer)
 
-		updateController := controllercustomer.NewUpdateCustomerController(ctx, usecasecustomer.NewCustomerUpdate(repo))
+		updateController := controllercustomer.NewUpdateCustomerController(ctx, usecasecustomer.NewCustomerUpdate(customerRepo))
 		g.PUT("/:cpf", updateController.PutUpdateCustomer)
 
-		findByCPFController := controllercustomer.NewFindCustomerByCPFController(ctx, usecasecustomer.NewCustomerFindByCPF(repo))
+		findByCPFController := controllercustomer.NewFindCustomerByCPFController(ctx, usecasecustomer.NewCustomerFindByCPF(customerRepo))
 		g.GET("/:cpf", findByCPFController.GetCustomerByCPF)
 
-		findAllController := controllercustomer.NewFindAllCustomersController(ctx, usecasecustomer.NewCustomerFindAll(repo))
+		findAllController := controllercustomer.NewFindAllCustomersController(ctx, usecasecustomer.NewCustomerFindAll(customerRepo))
 		g.GET("/", findAllController.GetAllCustomers)
 	}
 
 	p := s.router.Group("/kitchencontrol/api/v1/products")
 	{
-		converter := converter.NewProductConverter()
-		repo := repositorygorm.NewProductRepositoryGorm(db, converter)
-
-		registerController := controllerproduct.NewRegisterProductController(ctx, usecaseproduct.NewProductRegister(repo))
+		registerController := controllerproduct.NewRegisterProductController(ctx, usecaseproduct.NewProductRegister(productRepo))
 		p.POST("/", registerController.PostRegisterProduct)
 
-		findAllController := controllerproduct.NewFindAllProductController(ctx, usecaseproduct.NewProductFindAll(repo))
+		findAllController := controllerproduct.NewFindAllProductController(ctx, usecaseproduct.NewProductFindAll(productRepo))
 		p.GET("/", findAllController.GetAllProducts)
 
-		findByIDController := controllerproduct.NewFindProductByIDController(ctx, usecaseproduct.NewProductFindByID(repo))
+		findByIDController := controllerproduct.NewFindProductByIDController(ctx, usecaseproduct.NewProductFindByID(productRepo))
 		p.GET("/:id", findByIDController.GetProductByID)
 
-		findByCategoryController := controllerproduct.NewFindProductByCategoryController(ctx, usecaseproduct.NewProductFindByCategory(repo))
+		findByCategoryController := controllerproduct.NewFindProductByCategoryController(ctx, usecaseproduct.NewProductFindByCategory(productRepo))
 		p.GET("/category/:id", findByCategoryController.GetProductByCategory)
 
-		updateController := controllerproduct.NewUpdateProductController(ctx, usecaseproduct.NewProductUpdate(repo))
+		updateController := controllerproduct.NewUpdateProductController(ctx, usecaseproduct.NewProductUpdate(productRepo))
 		p.PUT("/:id", updateController.PutUpdateProduct)
 
 	}
 
 	o := s.router.Group("/kitchencontrol/api/v1/orders")
 	{
-		converter := converter.NewOrderConverter()
-		repo := repositorygorm.NewOrderRepositoryGorm(db, converter)
-		orderController := controllerorder.NewCreateOrderController(ctx, usecaseorder.NewOrderCreate(repo))
+
+		orderController := controllerorder.NewCreateOrderController(ctx, usecaseorder.NewOrderCreate(orderRepo, customerRepo, productRepo))
 		o.POST("/", orderController.PostCreateOrder)
 	}
 

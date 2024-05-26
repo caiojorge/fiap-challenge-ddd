@@ -5,15 +5,15 @@ import (
 	"regexp"
 )
 
-func RemoveFormatFromCPF(cpf string) string {
+func RemoveMaksFromCPF(cpf string) string {
 	re := regexp.MustCompile(`[^\d]`)
 	return re.ReplaceAllString(cpf, "")
 }
 
-// FormatCPF formats a CPF string
-func FormatCPF(cpf string) (string, error) {
+// PutMaskOnCPF formats a CPF string
+func PutMaskOnCPF(cpf string) (string, error) {
 	// Remove any non-digit characters
-	cleanedCPF := RemoveFormatFromCPF(cpf)
+	cleanedCPF := RemoveMaksFromCPF(cpf)
 
 	// Check if the cleaned CPF has exactly 11 digits
 	if len(cleanedCPF) != 11 {
