@@ -23,13 +23,13 @@ func NewFindAllController(ctx context.Context, usecase portsusecase.FindAllOrder
 
 // GetAllOrders returns a list of all orders
 // @Summary Get all orders
-// @Description Get details of all orders
+// @Description Retorna todos os pedidos (orders) registrados no sistema. Se não houver pedidos, retorna um erro (404).
 // @Tags Orders
 // @Accept  json
 // @Produce  json
 // @Success 200 {array} dto.OrderDTO
-// @Failure 400 {object} "{'error': 'Invalid data'}" "Bad Request"
-// @Failure 404 {object} "{'error': 'No orders found'}" "Not Found"
+// @Failure 400 {object} string "Bad Request"
+// @Failure 404 {object} string "Not Found"
 // @Router /orders [get]
 func (r *FindAllController) GetAllOrders(c *gin.Context) {
 
@@ -50,6 +50,7 @@ func (r *FindAllController) GetAllOrders(c *gin.Context) {
 		dto.FromEntity(*order)
 		dtos = append(dtos, dto)
 	}
+
 	// err = copier.Copy(&dtos, &orders)
 	// if err != nil {
 	// 	c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid data"})

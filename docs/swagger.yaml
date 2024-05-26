@@ -27,6 +27,8 @@ definitions:
     type: object
   dto.OrderDTO:
     properties:
+      created_at:
+        type: string
       customercpf:
         type: string
       id:
@@ -208,10 +210,37 @@ paths:
       tags:
       - Customers
   /orders:
+    get:
+      consumes:
+      - application/json
+      description: Retorna todos os pedidos (orders) registrados no sistema. Se não
+        houver pedidos, retorna um erro (404).
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/dto.OrderDTO'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: Get all orders
+      tags:
+      - Orders
     post:
       consumes:
       - application/json
-      description: Create Order in DB
+      description: Cria um peddo (order) no sistema. O cliente (customer) pode ou
+        não de identificar. Se o cliente não se identificar, o pedido será registrado
+        como anônimo. O produto, porém, deve ter sido previamente cadastrado.
       parameters:
       - description: cria nova Order
         in: body

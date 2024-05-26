@@ -14,9 +14,8 @@ type Customer struct {
 	Email string
 }
 
-// TDOD: melhorar esse conceito. Não esta legal ainda
-// IdentifyCustomer identifica um cliente pelo CPF; na verdade, cria pelo CPF
-func IdentifyCustomer(cpf *valueobject.CPF) (*Customer, error) {
+// NewCustomerWithCPFOnly identifica um cliente pelo CPF; na verdade, cria pelo CPF
+func NewCustomerWithCPFOnly(cpf *valueobject.CPF) (*Customer, error) {
 	if cpf == nil {
 		return nil, errors.New("CPF is required")
 
@@ -25,6 +24,23 @@ func IdentifyCustomer(cpf *valueobject.CPF) (*Customer, error) {
 	return &Customer{
 		CPF: *cpf,
 	}, nil
+}
+
+func NewCustomer(cpf valueobject.CPF, name, email string) (*Customer, error) {
+
+	customer := &Customer{
+		CPF:   cpf,
+		Name:  name,
+		Email: email,
+	}
+
+	// Validate customer
+	err := customer.Validate()
+	if err != nil {
+		return nil, err
+	}
+
+	return customer, nil
 }
 
 // RegisterCustomer caso o cliente queira se registrar, informando os atributos um a um
@@ -42,22 +58,6 @@ func (c *Customer) RegisterCustomer(name, email string) error {
 }
 
 // NewCustomer caso o cliente queira se registrar, informando todo os atributos ao mesmo tempo
-func NewCustomer(cpf valueobject.CPF, name, email string) (*Customer, error) {
-
-	customer := &Customer{
-		CPF:   cpf,
-		Name:  name,
-		Email: email,
-	}
-
-	// Validate customer
-	err := customer.Validate()
-	if err != nil {
-		return nil, err
-	}
-
-	return customer, nil
-}
 
 func (c *Customer) GetCPF() *valueobject.CPF {
 	return &c.CPF

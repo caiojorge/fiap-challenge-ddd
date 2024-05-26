@@ -7,23 +7,23 @@ import (
 	"github.com/caiojorge/fiap-challenge-ddd/internal/core/domain/entity"
 )
 
-type CustomerFindAllUseCase struct {
-	repository ports.CustomerRepository
+type OrderFindAllUseCase struct {
+	repository ports.OrderRepository
 }
 
-func NewCustomerFindAll(repository ports.CustomerRepository) *CustomerFindAllUseCase {
-	return &CustomerFindAllUseCase{
+func NewOrderFindAll(repository ports.OrderRepository) *OrderFindAllUseCase {
+	return &OrderFindAllUseCase{
 		repository: repository,
 	}
 }
 
-// FindAllCustomers busca todas as ordens
-func (cr *CustomerFindAllUseCase) FindAllCustomers(ctx context.Context) ([]*entity.Customer, error) {
+// FindAllOrder busca todas as ordens
+func (cr *OrderFindAllUseCase) FindAllOrders(ctx context.Context) ([]*entity.Order, error) {
 
-	customers, err := cr.repository.FindAll(ctx)
+	orders, err := cr.repository.FindAll(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	return customers, nil
+	return orders, nil
 }

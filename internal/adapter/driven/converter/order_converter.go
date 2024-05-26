@@ -28,9 +28,17 @@ func (pc *OrderConverter) ToEntity(model *model.Order) *entity.Order {
 		Items:       pc.toEntityItems(model.Items),
 		Total:       model.Total,
 		Status:      model.Status,
-		CustomerCPF: *model.CustomerCPF,
+		CustomerCPF: pc.checkCustomerCPF(model.CustomerCPF),
 		CreatedAt:   model.CreatedAt,
 	}
+}
+
+func (pc *OrderConverter) checkCustomerCPF(cpf *string) string {
+	if cpf == nil {
+		return ""
+	}
+	return *cpf
+
 }
 
 func (pc *OrderConverter) fromEntityItems(items []*entity.OrderItem) []*model.OrderItem {

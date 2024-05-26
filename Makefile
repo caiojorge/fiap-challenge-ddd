@@ -12,6 +12,12 @@ mysql:
 
 stop:
 	docker-compose down
+	
+install-swag:
+	go install github.com/swaggo/swag/cmd/swag@latest
+	echo 'export PATH=$PATH:$(go env GOPATH)/bin' >> ~/.bashrc
+	source ~/.bashrc
+	swag --version
 
 swaggo:
 	go get -u github.com/swaggo/swag/cmd/swag

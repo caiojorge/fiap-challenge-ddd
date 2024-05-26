@@ -20,23 +20,23 @@ func FromEntity(entity *entity.Customer) *model.Customer {
 	}
 }
 
-// TODO: voltar aqui para avaliar se é melhor retornar um erro tbm
+// ToEntity converte um model.Customer para um entity.Customer
+// Não verifica se o CPF é válido
 func ToEntity(model *model.Customer) *entity.Customer {
 	// coloco a mascara no cpf qdo crio a entidade
-	cpfWithNonDigits, err := formatter.PutMaskOnCPF(model.CPF)
-
+	modelCPF, err := formatter.PutMaskOnCPF(model.CPF)
 	if err != nil {
-		return nil
+		modelCPF = model.CPF // se der erro, deixa sem mascara mesmo
 	}
 
-	cpf, _ := valueobject.NewCPF(cpfWithNonDigits)
-
-	var customer *entity.Customer
-
-	if model.Email == "" && model.Name == "" {
-		customer, _ = entity.IdentifyCustomer(cpf)
-	} else {
-		customer, _ = entity.NewCustomer(*cpf, model.Name, model.Email)
+	cpf := valueobject.CPF{
+		Value: modelCPF,
 	}
-	return customer
+
+	return &entity.Customer{
+		CPF:   cpf,
+		Name:  model.Name,
+		Email: model.Email,
+	}
+
 }

@@ -137,7 +137,7 @@ func TestOrderWithNoRegistration(t *testing.T) {
 	// Customer
 	cpf, err := valueobject.NewCPF("19528476562")
 	assert.Nil(t, err)
-	customer, err := IdentifyCustomer(cpf)
+	customer, err := NewCustomerWithCPFOnly(cpf)
 	assert.Nil(t, err)
 
 	// Product

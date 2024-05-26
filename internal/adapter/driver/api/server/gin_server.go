@@ -6,8 +6,6 @@ import (
 	"time"
 
 	"github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driven/converter"
-	infra "github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driven/db"
-	"github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driven/model"
 	"github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driven/repositorygorm"
 	controllercustomer "github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driver/api/controller/customer"
 	controllerorder "github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driver/api/controller/order"
@@ -21,26 +19,31 @@ import (
 
 type GinServer struct {
 	router *gin.Engine
+	db     *gorm.DB
 }
 
-func NewServer() *GinServer {
+func NewServer(db *gorm.DB) *GinServer {
 	r := gin.Default()
-	return &GinServer{router: r}
+	return &GinServer{router: r, db: db}
+}
+
+func (s *GinServer) GetDB() *gorm.DB {
+	return s.db
 }
 
 func (s *GinServer) Initialization() *GinServer {
 
 	//db := setupSQLite()
-	db := setupDB()
+	//s.db = setupDB()
 
 	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
 	defer cancel()
 
-	customerRepo := repositorygorm.NewCustomerRepositoryGorm(db)
+	customerRepo := repositorygorm.NewCustomerRepositoryGorm(s.db)
 	productConverter := converter.NewProductConverter()
-	productRepo := repositorygorm.NewProductRepositoryGorm(db, productConverter)
+	productRepo := repositorygorm.NewProductRepositoryGorm(s.db, productConverter)
 	orderConverter := converter.NewOrderConverter()
-	orderRepo := repositorygorm.NewOrderRepositoryGorm(db, orderConverter)
+	orderRepo := repositorygorm.NewOrderRepositoryGorm(s.db, orderConverter)
 
 	g := s.router.Group("/kitchencontrol/api/v1/customers")
 	{
@@ -81,33 +84,17 @@ func (s *GinServer) Initialization() *GinServer {
 
 		orderController := controllerorder.NewCreateOrderController(ctx, usecaseorder.NewOrderCreate(orderRepo, customerRepo, productRepo))
 		o.POST("/", orderController.PostCreateOrder)
+
+		findAllOrdersController := controllerorder.NewFindAllController(ctx, usecaseorder.NewOrderFindAll(orderRepo))
+		o.GET("/", findAllOrdersController.GetAllOrders)
+
+		o.GET("/:id", func(c *gin.Context) {
+			c.JSON(200, gin.H{"message": "Hello World"})
+		})
+
 	}
 
 	return s
-}
-
-func setupDB() *gorm.DB {
-
-	host := "localhost"
-	port := "3306"
-	user := "root"
-	password := "root"
-	dbName := "dbcontrol"
-
-	db := infra.NewDB(host, port, user, password, dbName)
-
-	// get a connection
-	connection := db.GetConnection("mysql")
-	if connection == nil {
-		log.Fatal("Expected a non-nil MySQL connection, but got nil")
-	}
-
-	// Migrate the schema
-	if err := connection.AutoMigrate(&model.Customer{}, &model.Product{}); err != nil {
-		log.Fatalf("Failed to migrate database schema: %v", err)
-	}
-
-	return connection
 }
 
 func (s *GinServer) Run(port string) {

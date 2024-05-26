@@ -217,8 +217,44 @@ const docTemplate = `{
             }
         },
         "/orders": {
+            "get": {
+                "description": "Retorna todos os pedidos (orders) registrados no sistema. Se não houver pedidos, retorna um erro (404).",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Get all orders",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/dto.OrderDTO"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
             "post": {
-                "description": "Create Order in DB",
+                "description": "Cria um peddo (order) no sistema. O cliente (customer) pode ou não de identificar. Se o cliente não se identificar, o pedido será registrado como anônimo. O produto, porém, deve ter sido previamente cadastrado.",
                 "consumes": [
                     "application/json"
                 ],
@@ -596,6 +632,9 @@ const docTemplate = `{
         "dto.OrderDTO": {
             "type": "object",
             "properties": {
+                "created_at": {
+                    "type": "string"
+                },
                 "customercpf": {
                     "type": "string"
                 },

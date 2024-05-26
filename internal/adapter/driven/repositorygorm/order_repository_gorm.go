@@ -26,9 +26,13 @@ func NewOrderRepositoryGorm(db *gorm.DB, converter converter.Converter[entity.Or
 
 // Create creates a new product. It returns an error if something goes wrong.
 func (r *OrderRepositoryGorm) Create(ctx context.Context, entity *entity.Order) error {
-	//model := r.converter.FromEntity(entity)
 	var model model.Order
 	copier.Copy(&model, entity)
+
+	if *model.CustomerCPF == "" {
+		model.CustomerCPF = nil
+	}
+
 	return r.DB.Create(model).Error
 }
 
@@ -60,7 +64,12 @@ func (r *OrderRepositoryGorm) Find(ctx context.Context, id string) (*entity.Orde
 
 func (r *OrderRepositoryGorm) FindAll(ctx context.Context) ([]*entity.Order, error) {
 	var mOrders []model.Order
-	result := r.DB.Find(&mOrders)
+	// result := r.DB.Find(&mOrders)
+	// if result.Error != nil {
+	// 	return nil, result.Error
+	// }
+
+	result := r.DB.Preload("Items").Order("created_at desc").Find(&mOrders)
 	if result.Error != nil {
 		return nil, result.Error
 	}

@@ -30,7 +30,7 @@ func NewCreateOrderController(ctx context.Context, usecase portsusecase.CreateOr
 // PostCreateOrder godoc
 // @Summary Create Order
 // @Schemes
-// @Description Create Order in DB
+// @Description Cria um peddo (order) no sistema. O cliente (customer) pode ou não de identificar. Se o cliente não se identificar, o pedido será registrado como anônimo. O produto, porém, deve ter sido previamente cadastrado.
 // @Tags Orders
 // @Accept json
 // @Produce json

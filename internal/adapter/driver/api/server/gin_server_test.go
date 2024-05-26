@@ -5,8 +5,11 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driven/model"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
 )
 
 // mockControllerGetCustomerByCPF is a mock controller function
@@ -16,8 +19,20 @@ func mockControllerGetCustomerByCPF(c *gin.Context) {
 
 // Setup the server and define URLs with mock controller
 func setupTestServer() *GinServer {
+	db, err := gorm.Open(sqlite.Open(":memory:"), &gorm.Config{})
+	if err != nil {
+		panic("failed to connect database")
+	}
+
+	//db := setupMysql()
+
+	// Migrar o esquema
+	err = db.AutoMigrate(&model.Customer{}, &model.Product{}, &model.Order{}, &model.OrderItem{})
+	if err != nil {
+		panic("failed to migrate database")
+	}
 	gin.SetMode(gin.TestMode)
-	server := NewServer()
+	server := NewServer(db)
 	server.router.GET("/customer", mockControllerGetCustomerByCPF)
 	return server
 }
