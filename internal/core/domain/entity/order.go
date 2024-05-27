@@ -2,6 +2,7 @@ package entity
 
 import (
 	"errors"
+	"log"
 	"time"
 
 	"github.com/caiojorge/fiap-challenge-ddd/internal/core/domain/valueobject"
@@ -22,7 +23,7 @@ func OrderInit(customerCPF string) *Order {
 
 	location, err := time.LoadLocation("America/Sao_Paulo")
 	if err != nil {
-		panic("failed to load location")
+		log.Default().Println("failed to load location")
 	}
 
 	order := Order{
@@ -38,8 +39,9 @@ func OrderInit(customerCPF string) *Order {
 func NewOrder(cpf string, items []*OrderItem) (*Order, error) {
 	location, err := time.LoadLocation("America/Sao_Paulo")
 	if err != nil {
-		panic("failed to load location")
+		return nil, err
 	}
+
 	order := Order{
 		ID:          shared.NewIDGenerator(),
 		CustomerCPF: cpf,
