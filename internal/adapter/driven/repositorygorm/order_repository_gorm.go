@@ -46,10 +46,11 @@ func (r *OrderRepositoryGorm) Update(ctx context.Context, entity *entity.Order) 
 	return nil
 }
 
+// Find retrieves a product by its ID. It returns an error if something goes wrong.
 func (r *OrderRepositoryGorm) Find(ctx context.Context, id string) (*entity.Order, error) {
 	var orderModel model.Order
-	fmt.Println("repositorygorm: Find order: " + id)
-	result := r.DB.Model(&model.Order{}).Where("id = ?", id).First(&orderModel)
+	result := r.DB.Preload("Items").Order("created_at desc").Find(&orderModel, "id = ?", id)
+	//result := r.DB.Model(&model.Order{}).Where("id = ?", id).First(&orderModel)
 	if result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 			return nil, nil
@@ -64,10 +65,6 @@ func (r *OrderRepositoryGorm) Find(ctx context.Context, id string) (*entity.Orde
 
 func (r *OrderRepositoryGorm) FindAll(ctx context.Context) ([]*entity.Order, error) {
 	var mOrders []model.Order
-	// result := r.DB.Find(&mOrders)
-	// if result.Error != nil {
-	// 	return nil, result.Error
-	// }
 
 	result := r.DB.Preload("Items").Order("created_at desc").Find(&mOrders)
 	if result.Error != nil {

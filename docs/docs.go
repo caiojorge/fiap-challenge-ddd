@@ -304,6 +304,50 @@ const docTemplate = `{
                 }
             }
         },
+        "/orders/{id}": {
+            "get": {
+                "description": "Get details of a Order and their items by id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Get a Order by id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Order id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.OrderDTO"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Order not found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/products": {
             "get": {
                 "description": "Get details of all products",
@@ -476,12 +520,6 @@ const docTemplate = `{
                         "schema": {
                             "type": "string"
                         }
-                    },
-                    "500": {
-                        "description": "Product not found",
-                        "schema": {
-                            "type": "string"
-                        }
                     }
                 }
             },
@@ -555,15 +593,6 @@ const docTemplate = `{
                         "name": "id",
                         "in": "path",
                         "required": true
-                    },
-                    {
-                        "description": "Product data",
-                        "name": "Product",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.ProductDTO"
-                        }
                     }
                 ],
                 "responses": {

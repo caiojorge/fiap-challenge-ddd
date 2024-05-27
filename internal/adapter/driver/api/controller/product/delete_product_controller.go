@@ -20,17 +20,15 @@ func NewDeleteProductController(ctx context.Context, usecase portsusecase.Delete
 	}
 }
 
-// DeleteProduct updates a Product by id
+// DeleteProduct deletes a Product by id
 // @Summary Delete a Product
 // @Description Delete details of a Product by id
 // @Tags Products
 // @Accept  json
 // @Produce  json
 // @Param id path string true "Product id"
-// @Param Product body dto.ProductDTO true "Product data"
 // @Success 200 {object} dto.ProductDTO
 // @Failure 400 {object} string "Invalid data"
-// @Failure 404 {object} string "Product not found"
 // @Router /products/{id} [delete]
 func (r *DeleteProductController) DeleteProduct(c *gin.Context) {
 	id := c.Param("id")
@@ -41,9 +39,9 @@ func (r *DeleteProductController) DeleteProduct(c *gin.Context) {
 
 	err := r.usecase.DeleteProduct(r.ctx, id)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, id)
+	c.JSON(http.StatusOK, gin.H{"msg": id + " deleted"})
 }

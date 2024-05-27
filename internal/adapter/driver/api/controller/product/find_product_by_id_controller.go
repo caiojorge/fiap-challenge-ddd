@@ -29,7 +29,6 @@ func NewFindProductByIDController(ctx context.Context, usecase portsusecase.Find
 // @Param id path string true "Product id"
 // @Success 200 {object} dto.ProductDTO
 // @Failure 404 {object} string "Product not found"
-// @Failure 500 {object} string "Product not found"
 // @Router /products/{id} [get]
 func (cr *FindProductByIDController) GetProductByID(c *gin.Context) {
 	//id, ok := c.GetQuery("id")
@@ -42,7 +41,7 @@ func (cr *FindProductByIDController) GetProductByID(c *gin.Context) {
 
 	product, err := cr.usecase.FindProductByID(cr.ctx, id)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
 	}
 

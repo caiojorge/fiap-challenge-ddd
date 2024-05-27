@@ -45,8 +45,8 @@ func (r *FindAllController) GetAllOrders(c *gin.Context) {
 	}
 
 	var dtos []dto.OrderDTO
-	dto := dto.OrderDTO{}
 	for _, order := range orders {
+		dto := dto.OrderDTO{}
 		dto.FromEntity(*order)
 		dtos = append(dtos, dto)
 	}

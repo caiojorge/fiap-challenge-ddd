@@ -7,8 +7,10 @@ import (
 	infra "github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driven/db"
 	"github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driven/model"
 	"github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driver/api/server"
+	"github.com/gin-gonic/gin"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
 
@@ -28,6 +30,17 @@ import (
 // @BasePath /kitchencontrol/api/v1
 
 func main() {
+	gin.SetMode(gin.ReleaseMode)
+
+	logger, err := zap.NewProduction()
+	if err != nil {
+		panic(err)
+	}
+	defer logger.Sync() // flushes buffer, if any
+
+	logger.Info("Hello zap!",
+		zap.String("category", "example"),
+	)
 
 	db := setupDB()
 	server := server.NewServer(db)
@@ -35,7 +48,12 @@ func main() {
 	server.Initialization()
 
 	// Migrate the schema
-	if err := server.GetDB().AutoMigrate(&model.Customer{}, &model.Product{}, &model.Order{}, &model.OrderItem{}); err != nil {
+	if err := server.GetDB().AutoMigrate(
+		&model.Customer{},
+		&model.Product{},
+		&model.Order{},
+		&model.OrderItem{},
+		&model.Checkout{}); err != nil {
 		log.Fatalf("Failed to migrate database schema: %v", err)
 	}
 

@@ -77,6 +77,9 @@ func (s *GinServer) Initialization() *GinServer {
 		updateController := controllerproduct.NewUpdateProductController(ctx, usecaseproduct.NewProductUpdate(productRepo))
 		p.PUT("/:id", updateController.PutUpdateProduct)
 
+		deleteController := controllerproduct.NewDeleteProductController(ctx, usecaseproduct.NewProductDelete(productRepo))
+		p.DELETE("/:id", deleteController.DeleteProduct)
+
 	}
 
 	o := s.router.Group("/kitchencontrol/api/v1/orders")
@@ -88,9 +91,8 @@ func (s *GinServer) Initialization() *GinServer {
 		findAllOrdersController := controllerorder.NewFindAllController(ctx, usecaseorder.NewOrderFindAll(orderRepo))
 		o.GET("/", findAllOrdersController.GetAllOrders)
 
-		o.GET("/:id", func(c *gin.Context) {
-			c.JSON(200, gin.H{"message": "Hello World"})
-		})
+		findByIDController := controllerorder.NewFindOrderByIDController(ctx, usecaseorder.NewOrderFindByID(orderRepo))
+		o.GET("/:id", findByIDController.GetOrderByID)
 
 	}
 
