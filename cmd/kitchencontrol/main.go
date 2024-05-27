@@ -38,14 +38,11 @@ func main() {
 	}
 	defer logger.Sync() // flushes buffer, if any
 
-	logger.Info("Hello zap!",
-		zap.String("category", "example"),
-	)
-
 	db := setupDB()
 	server := server.NewServer(db)
-
 	server.Initialization()
+
+	logger.Info("Server Initialized")
 
 	// Migrate the schema
 	if err := server.GetDB().AutoMigrate(
@@ -53,12 +50,17 @@ func main() {
 		&model.Product{},
 		&model.Order{},
 		&model.OrderItem{},
-		&model.Checkout{}); err != nil {
+		&model.Checkout{},
+		&model.Kitchen{}); err != nil {
 		log.Fatalf("Failed to migrate database schema: %v", err)
 	}
 
+	logger.Info("Migration ok")
+
 	docs.SwaggerInfo.BasePath = "/kitchencontrol/api/v1"
 	server.GetRouter().GET("/kitchencontrol/api/v1/docs/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
+
+	logger.Info("Swagger ok")
 
 	server.Run(":8080")
 

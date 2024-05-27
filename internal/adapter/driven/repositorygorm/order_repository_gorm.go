@@ -99,3 +99,37 @@ func (r *OrderRepositoryGorm) Delete(ctx context.Context, id string) error {
 
 	return nil
 }
+
+func (r *OrderRepositoryGorm) FindByParams(ctx context.Context, params map[string]interface{}) ([]*entity.Order, error) {
+
+	var orders []*entity.Order
+	var models []*model.Order
+
+	query := r.DB.Preload("Items").Order("created_at desc")
+	//query := r.DB.Model(&model.Order{})
+
+	// Adiciona condições dinâmicas com base nos parâmetros
+	if status, ok := params["status"]; ok {
+		query = query.Where("status = ?", status)
+	}
+	if customerCPF, ok := params["customer_cpf"]; ok {
+		query = query.Where("customer_cpf = ?", customerCPF)
+	}
+	if startDate, ok := params["start_date"]; ok {
+		query = query.Where("created_at >= ?", startDate)
+	}
+	if endDate, ok := params["end_date"]; ok {
+		query = query.Where("created_at <= ?", endDate)
+	}
+
+	// Executa a consulta
+	err := query.Find(&models).Error
+	if err != nil {
+		return nil, err
+	}
+
+	copier.Copy(&orders, &models)
+
+	return orders, err
+
+}

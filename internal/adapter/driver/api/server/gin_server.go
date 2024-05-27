@@ -7,10 +7,15 @@ import (
 
 	"github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driven/converter"
 	"github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driven/repositorygorm"
+	controllercheckout "github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driver/api/controller/checkout"
 	controllercustomer "github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driver/api/controller/customer"
+	controllerkitchen "github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driver/api/controller/kitchen"
 	controllerorder "github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driver/api/controller/order"
 	controllerproduct "github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driver/api/controller/product"
+	"github.com/caiojorge/fiap-challenge-ddd/internal/core/application/service"
+	usecasecheckout "github.com/caiojorge/fiap-challenge-ddd/internal/core/application/usecase/checkout"
 	usecasecustomer "github.com/caiojorge/fiap-challenge-ddd/internal/core/application/usecase/customer"
+	usecasekitchen "github.com/caiojorge/fiap-challenge-ddd/internal/core/application/usecase/kitchen"
 	usecaseorder "github.com/caiojorge/fiap-challenge-ddd/internal/core/application/usecase/order"
 	usecaseproduct "github.com/caiojorge/fiap-challenge-ddd/internal/core/application/usecase/product"
 	"github.com/gin-gonic/gin"
@@ -44,6 +49,9 @@ func (s *GinServer) Initialization() *GinServer {
 	productRepo := repositorygorm.NewProductRepositoryGorm(s.db, productConverter)
 	orderConverter := converter.NewOrderConverter()
 	orderRepo := repositorygorm.NewOrderRepositoryGorm(s.db, orderConverter)
+	checkoutRepo := repositorygorm.NewCheckoutRepositoryGorm(s.db)
+	kitchenRepo := repositorygorm.NewKitchenRepositoryGorm(s.db)
+	gatewayService := service.NewFakePaymentService()
 
 	g := s.router.Group("/kitchencontrol/api/v1/customers")
 	{
@@ -94,6 +102,21 @@ func (s *GinServer) Initialization() *GinServer {
 		findByIDController := controllerorder.NewFindOrderByIDController(ctx, usecaseorder.NewOrderFindByID(orderRepo))
 		o.GET("/:id", findByIDController.GetOrderByID)
 
+		findByParamsOrdersController := controllerorder.NewFindByParamsController(ctx, usecaseorder.NewOrderFindByParams(orderRepo))
+		o.GET("/paid", findByParamsOrdersController.GetByParamsOrders)
+
+	}
+
+	c := s.router.Group("/kitchencontrol/api/v1/checkouts")
+	{
+		checkoutController := controllercheckout.NewCreateCheckoutController(ctx, usecasecheckout.NewCheckoutCreate(orderRepo, checkoutRepo, gatewayService, kitchenRepo, productRepo))
+		c.POST("/", checkoutController.PostCreateCheckout)
+	}
+
+	k := s.router.Group("/kitchencontrol/api/v1/kitchens")
+	{
+		ktController := controllerkitchen.NewFindKitchenAllController(ctx, usecasekitchen.NewKitchenFindAll(kitchenRepo))
+		k.GET("/orders", ktController.GetAllOrdersInKitchen)
 	}
 
 	return s

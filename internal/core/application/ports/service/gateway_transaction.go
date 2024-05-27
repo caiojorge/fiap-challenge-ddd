@@ -1,4 +1,4 @@
-package portsusecase
+package portsservice
 
 import (
 	"context"
@@ -7,5 +7,6 @@ import (
 )
 
 type GatewayTransactionService interface {
-	CreateCheckout(ctx context.Context, checkout *entity.Checkout) error
+	CreateTransaction(ctx context.Context, checkout *entity.Checkout) (*string, error)
+	CancelTransaction(ctx context.Context, id string) error
 }

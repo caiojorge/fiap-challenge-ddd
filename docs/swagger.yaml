@@ -1,5 +1,35 @@
 basePath: /kitchencontrol/api/v1
 definitions:
+  dto.CheckoutDTO:
+    properties:
+      created_at:
+        type: string
+      customer_cpf:
+        type: string
+      gateway:
+        type: string
+      gateway_id:
+        type: string
+      gateway_transaction_id:
+        type: string
+      id:
+        type: string
+      order_id:
+        type: string
+      total:
+        type: number
+    type: object
+  dto.CreateCheckoutDTO:
+    properties:
+      customer_cpf:
+        type: string
+      gateway:
+        type: string
+      gateway_id:
+        type: string
+      order_id:
+        type: string
+    type: object
   dto.CreateOrderDTO:
     properties:
       cpf:
@@ -23,6 +53,21 @@ definitions:
       email:
         type: string
       name:
+        type: string
+    type: object
+  dto.KitchenDTO:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: string
+      item_order_id:
+        type: string
+      order_id:
+        type: string
+      product_name:
+        type: string
+      responsible:
         type: string
     type: object
   dto.OrderDTO:
@@ -82,6 +127,38 @@ info:
   title: Fiap Challenge DDD API
   version: "1.0"
 paths:
+  /checkouts:
+    post:
+      consumes:
+      - application/json
+      description: Efetiva o pagamento do cliente, via fake checkout nesse momento,
+        e libera o pedido para preparação. A ordem muda de status nesse momento, para
+        em preparação.
+      parameters:
+      - description: cria novo Checkout
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateCheckoutDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.CheckoutDTO'
+        "400":
+          description: invalid data
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      summary: Create Checkout
+      tags:
+      - Checkouts
   /customers:
     get:
       consumes:
@@ -209,6 +286,32 @@ paths:
       summary: Update a customer
       tags:
       - Customers
+  /kitchens/orders:
+    get:
+      consumes:
+      - application/json
+      description: Retorna todos os pedidos (orders) que estão na cozinha para inicio
+        de preparação. Se não houver pedidos, retorna um erro (404).
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/dto.KitchenDTO'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: Get all orders in the kitchen
+      tags:
+      - Kitchens
   /orders:
     get:
       consumes:
@@ -299,6 +402,32 @@ paths:
       summary: Get a Order by id
       tags:
       - Orders
+  /orders/paid:
+    get:
+      consumes:
+      - application/json
+      description: Retorna todos os pedidos (orders) registrados no sistema. Se não
+        houver pedidos, retorna um erro (404).
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/dto.OrderDTO'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: Get all paid orders
+      tags:
+      - Orders
   /products:
     get:
       consumes:
@@ -381,10 +510,6 @@ paths:
             $ref: '#/definitions/dto.ProductDTO'
         "400":
           description: Invalid data
-          schema:
-            type: string
-        "404":
-          description: Product not found
           schema:
             type: string
       summary: Delete a Product

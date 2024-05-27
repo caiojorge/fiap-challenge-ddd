@@ -24,6 +24,52 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/checkouts": {
+            "post": {
+                "description": "Efetiva o pagamento do cliente, via fake checkout nesse momento, e libera o pedido para preparação. A ordem muda de status nesse momento, para em preparação.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Checkouts"
+                ],
+                "summary": "Create Checkout",
+                "parameters": [
+                    {
+                        "description": "cria novo Checkout",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateCheckoutDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.CheckoutDTO"
+                        }
+                    },
+                    "400": {
+                        "description": "invalid data",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/customers": {
             "get": {
                 "description": "Get details of all customers",
@@ -216,6 +262,44 @@ const docTemplate = `{
                 }
             }
         },
+        "/kitchens/orders": {
+            "get": {
+                "description": "Retorna todos os pedidos (orders) que estão na cozinha para inicio de preparação. Se não houver pedidos, retorna um erro (404).",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Kitchens"
+                ],
+                "summary": "Get all orders in the kitchen",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/dto.KitchenDTO"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/orders": {
             "get": {
                 "description": "Retorna todos os pedidos (orders) registrados no sistema. Se não houver pedidos, retorna um erro (404).",
@@ -297,6 +381,44 @@ const docTemplate = `{
                     },
                     "500": {
                         "description": "internal server error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/orders/paid": {
+            "get": {
+                "description": "Retorna todos os pedidos (orders) registrados no sistema. Se não houver pedidos, retorna um erro (404).",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Get all paid orders",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/dto.OrderDTO"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
                         "schema": {
                             "type": "string"
                         }
@@ -607,18 +729,58 @@ const docTemplate = `{
                         "schema": {
                             "type": "string"
                         }
-                    },
-                    "404": {
-                        "description": "Product not found",
-                        "schema": {
-                            "type": "string"
-                        }
                     }
                 }
             }
         }
     },
     "definitions": {
+        "dto.CheckoutDTO": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "customer_cpf": {
+                    "type": "string"
+                },
+                "gateway": {
+                    "type": "string"
+                },
+                "gateway_id": {
+                    "type": "string"
+                },
+                "gateway_transaction_id": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "order_id": {
+                    "type": "string"
+                },
+                "total": {
+                    "type": "number"
+                }
+            }
+        },
+        "dto.CreateCheckoutDTO": {
+            "type": "object",
+            "properties": {
+                "customer_cpf": {
+                    "type": "string"
+                },
+                "gateway": {
+                    "type": "string"
+                },
+                "gateway_id": {
+                    "type": "string"
+                },
+                "order_id": {
+                    "type": "string"
+                }
+            }
+        },
         "dto.CreateOrderDTO": {
             "type": "object",
             "properties": {
@@ -654,6 +816,29 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.KitchenDTO": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "item_order_id": {
+                    "type": "string"
+                },
+                "order_id": {
+                    "type": "string"
+                },
+                "product_name": {
+                    "type": "string"
+                },
+                "responsible": {
                     "type": "string"
                 }
             }

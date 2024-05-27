@@ -4,13 +4,14 @@ import (
 	"errors"
 	"time"
 
+	"github.com/caiojorge/fiap-challenge-ddd/internal/shared"
 	"github.com/caiojorge/fiap-challenge-ddd/internal/shared/validator"
 )
 
 type Checkout struct {
 	ID                   string
 	OrderID              string
-	Gateway              string
+	Gateway              string // TODO pensar em um value object para Gateway
 	GatewayID            string
 	GatewayTransactionID string
 	CustomerCPF          string
@@ -26,6 +27,7 @@ func NewCheckout(orderID, gateway, gatewayID, customerCPF string, total float64)
 	}
 
 	return &Checkout{
+		ID:          shared.NewIDGenerator(),
 		OrderID:     orderID,
 		Gateway:     gateway,
 		GatewayID:   gatewayID,
@@ -35,8 +37,23 @@ func NewCheckout(orderID, gateway, gatewayID, customerCPF string, total float64)
 	}, nil
 }
 
-func (c *Checkout) FinalAmount(total float64) {
+func (c *Checkout) ConfirmTransaction(transactionID string, total float64) error {
+	location, err := time.LoadLocation("America/Sao_Paulo")
+	if err != nil {
+		return err
+	}
+
+	c.ID = shared.NewIDGenerator()
+	c.CreatedAt = time.Now().In(location)
+	c.GatewayTransactionID = transactionID
 	c.Total = total
+
+	err = c.Validate()
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (c *Checkout) Validate() error {

@@ -8,6 +8,7 @@ import (
 	"github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driver/api/dto"
 	portsusecase "github.com/caiojorge/fiap-challenge-ddd/internal/core/application/ports/usecase/checkout"
 	"github.com/caiojorge/fiap-challenge-ddd/internal/core/domain/entity"
+	"github.com/caiojorge/fiap-challenge-ddd/internal/shared/formatter"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/copier"
 )
@@ -15,11 +16,12 @@ import (
 var ErrAlreadyExists = errors.New("order already exists")
 
 type CreateCheckoutController struct {
-	usecase portsusecase.CreateCheckoutUseCase
 	ctx     context.Context
+	usecase portsusecase.CreateCheckoutUseCase
 }
 
-func NewCreateCheckoutController(ctx context.Context, usecase portsusecase.CreateCheckoutUseCase) *CreateCheckoutController {
+func NewCreateCheckoutController(ctx context.Context,
+	usecase portsusecase.CreateCheckoutUseCase) *CreateCheckoutController {
 	return &CreateCheckoutController{
 		usecase: usecase,
 		ctx:     ctx,
@@ -46,6 +48,8 @@ func (r *CreateCheckoutController) PostCreateCheckout(c *gin.Context) {
 		return
 	}
 
+	dto.CustomerCPF = formatter.RemoveMaksFromCPF(dto.CustomerCPF)
+
 	var entity entity.Checkout
 	err := copier.Copy(&entity, &dto)
 	if err != nil {
@@ -53,9 +57,14 @@ func (r *CreateCheckoutController) PostCreateCheckout(c *gin.Context) {
 		return
 	}
 
-	err = r.usecase.CreateCheckout(r.ctx, &entity)
+	transactionID, err := r.usecase.CreateCheckout(r.ctx, &entity)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	if transactionID == nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to create transaction on gateway"})
 		return
 	}
 

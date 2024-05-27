@@ -130,6 +130,10 @@ func (o *Order) CalculateTotal() {
 	}
 }
 
+func (o *Order) IsPaid() bool {
+	return o.Status == valueobject.OrderStatusPaid
+}
+
 func (o *Order) Pay() {
 	o.Status = valueobject.OrderStatusPaid
 }

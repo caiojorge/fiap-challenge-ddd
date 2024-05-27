@@ -7,17 +7,21 @@ import (
 	"github.com/caiojorge/fiap-challenge-ddd/internal/shared"
 )
 
-// PaymentService provides methods for payment operations.
-type PaymentService struct {
+// FakePaymentService provides methods for payment operations.
+type FakePaymentService struct {
 }
 
-func NewPaymentService() *PaymentService {
-	return &PaymentService{}
+func NewFakePaymentService() *FakePaymentService {
+	return &FakePaymentService{}
 }
 
 // CreateCheckout creates a new checkout. This method should be implemented by the payment gateway.
-// Fake implementation.
-func (p *PaymentService) CreateCheckout(ctx context.Context, checkout *entity.Checkout) (*string, error) {
+func (p *FakePaymentService) CreateTransaction(ctx context.Context, checkout *entity.Checkout) (*string, error) {
 	transactionID := shared.NewIDGenerator() // Fake transaction ID
 	return &transactionID, nil
+}
+
+// CancelTransaction cancels a transaction. This method should be implemented by the payment gateway.
+func (p *FakePaymentService) CancelTransaction(ctx context.Context, id string) error {
+	return nil
 }
