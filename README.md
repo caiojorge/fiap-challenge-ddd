@@ -1,15 +1,10 @@
 # Project Name
 
-Projeto para finalização do curso de DDD, das disciplinas de DDD, Docker e Arquitetura 
+- Projeto para finalização do curso de DDD, das disciplinas de DDD, Docker e Arquitetura Hexagonal
 
-## Table of Contents
+- Estou usando a linguagem go para a resolução do exercício.
 
-- [Installation](#installation)
-- [Usage](#usage)
-- [Design](#Design)
-- [Deliverables](#Deliverablees)
-
-## Installation
+## Caso necessário, seguem os passos para instalação do SWAG
 
 # SWAG no desenvolvimento apenas.
 - Se o comando swag --version não funcionar, executar os passos abaixo:
@@ -21,11 +16,27 @@ source ~/.bashrc
 swag --version
 
 
-## Usage
+## Como testar os endpoints?
 
-- Instructions on how to use the project and any relevant examples.
+ # Server
+ - Executar o comando: docker-compose up -d
+ - Executar o comando: go run cmd/kitchencontrol/main.go 
 
-- Como o CPF precisa ser válido, pf, busque um cpf no site: https://geradordecpf.dev/
+ # Acessar o swagger
+ http://localhost:8080/kitchencontrol/api/v1/docs/index.html
+
+ # Products
+ - Testar a rota de products:
+ - - http://localhost:8080/kitchencontrol/api/v1/docs/index.html#/Products/post_products
+ - A api espera o seguinte body: 
+ 
+ {
+  "category": "almoço",
+  "description": "Massa com queijo",
+  "name": "Massa",
+  "price": 40
+} 
+
 
 ## Design
 
