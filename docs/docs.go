@@ -220,7 +220,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "Customer cpf",
-                        "name": "id",
+                        "name": "cpf",
                         "in": "path",
                         "required": true
                     },
@@ -230,7 +230,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.CustomerDTO"
+                            "$ref": "#/definitions/dto.UpdateCustomerDTO"
                         }
                     }
                 ],
@@ -923,6 +923,17 @@ const docTemplate = `{
                 },
                 "price": {
                     "type": "number"
+                }
+            }
+        },
+        "dto.UpdateCustomerDTO": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
                 }
             }
         }

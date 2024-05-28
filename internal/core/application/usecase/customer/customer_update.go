@@ -22,10 +22,14 @@ func NewCustomerUpdate(repository portsrepository.CustomerRepository) *CustomerU
 func (cr *CustomerUpdateUseCase) UpdateCustomer(ctx context.Context, customer entity.Customer) error {
 
 	fmt.Println("usecase: verifica se o cliente existe: " + customer.GetCPF().Value)
-	_, err := cr.repository.Find(ctx, customer.GetCPF().Value)
-	if err != nil && err.Error() != "customer not found" {
+	c, err := cr.repository.Find(ctx, customer.GetCPF().Value)
+	if err != nil {
 		fmt.Println("usecase: err: " + err.Error())
 		return err
+	}
+
+	if c == nil {
+		return fmt.Errorf("customer not found")
 	}
 
 	fmt.Println("usecase: atualizando cliente: " + customer.GetCPF().Value)

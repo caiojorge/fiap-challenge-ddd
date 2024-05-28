@@ -3,6 +3,8 @@ package infra
 import (
 	"fmt"
 	"log"
+	"os"
+	"time"
 
 	"github.com/caiojorge/fiap-challenge-ddd/internal/adapter/driven/model"
 	"gorm.io/driver/mysql"
@@ -57,14 +59,34 @@ func (d *DB) setupSQLite() *gorm.DB {
 
 func (d *DB) setupMysql() *gorm.DB {
 
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", d.User, d.Password, d.Host, d.Port, d.DBName)
+	// dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", d.User, d.Password, d.Host, d.Port, d.DBName)
 
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
-	if err != nil {
-		log.Fatalf("Failed to connect to the database: %v", err)
+	dbHost := os.Getenv("DB_HOST")
+	dbPort := os.Getenv("DB_PORT")
+	dbUser := os.Getenv("DB_USER")
+	dbPass := os.Getenv("DB_PASS")
+	dbName := os.Getenv("DB_NAME")
+
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
+		dbUser, dbPass, dbHost, dbPort, dbName)
+
+	var db *gorm.DB
+	var err error
+
+	for i := 0; i < 20; i++ {
+		db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
+		if err == nil {
+			break
+		}
+		fmt.Printf("Failed to connect to database. Retrying in 5 seconds... (%d/%d)\n", i+1, 10)
+		time.Sleep(5 * time.Second)
 	}
 
-	log.Println("Database schema migrated")
+	if err != nil {
+		panic("failed to connect database after multiple attempts")
+	}
+
+	fmt.Println("Successfully connected to the database")
 
 	return db
 }

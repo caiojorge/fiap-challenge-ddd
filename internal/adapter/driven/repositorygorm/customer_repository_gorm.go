@@ -30,8 +30,17 @@ func (r *CustomerRepositoryGorm) Create(ctx context.Context, entity *entity.Cust
 
 func (r *CustomerRepositoryGorm) Update(ctx context.Context, entity *entity.Customer) error {
 
-	result := r.DB.Save(converter.FromEntity(entity))
-	//result := r.DB.Model(&model.Customer{}).Where("cpf = ?", entity.GetCPF().Value).Updates(model.Customer{Name: entity.GetName(), Email: entity.GetEmail()})
+	model := model.Customer{
+		CPF:   formatter.RemoveMaksFromCPF(entity.GetCPF().Value),
+		Name:  entity.GetName(),
+		Email: entity.GetEmail(),
+	}
+
+	if model.CPF == "" {
+		return fmt.Errorf("cpf is required")
+	}
+
+	result := r.DB.Save(model)
 	if result.Error != nil {
 		return result.Error
 	}

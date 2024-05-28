@@ -1,3 +1,15 @@
+# Container
+fiap-run:
+	# docker rmi fiap-challenge-ddd-app
+	docker-compose up -d
+
+fiap-stop:
+	docker-compose down
+
+logs:
+	docker-compose logs -f
+
+# Local
 test:
 	go test -v -cover ./...
 
@@ -7,12 +19,6 @@ tidy:
 run:
 	go run cmd/kitchencontrol/main.go
 
-mysql:
-	docker-compose up -d
-
-stop:
-	docker-compose down
-	
 install-swag:
 	go install github.com/swaggo/swag/cmd/swag@latest
 	echo 'export PATH=$PATH:$(go env GOPATH)/bin' >> ~/.bashrc
@@ -38,3 +44,6 @@ coverage: test-coverage
 
 coverage-html: test-coverage
 	go tool cover -html=coverage.out
+
+
+

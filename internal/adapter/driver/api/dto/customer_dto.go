@@ -5,6 +5,11 @@ import (
 	"github.com/caiojorge/fiap-challenge-ddd/internal/core/domain/valueobject"
 )
 
+type UpdateCustomerDTO struct {
+	Name  string `json:"name"`
+	Email string `json:"email"`
+}
+
 type CustomerDTO struct {
 	CPF   string `json:"cpf"`
 	Name  string `json:"name"`

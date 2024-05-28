@@ -124,6 +124,13 @@ definitions:
       price:
         type: number
     type: object
+  dto.UpdateCustomerDTO:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+    type: object
 host: localhost:8080
 info:
   contact:
@@ -266,7 +273,7 @@ paths:
       parameters:
       - description: Customer cpf
         in: path
-        name: id
+        name: cpf
         required: true
         type: string
       - description: Customer data
@@ -274,7 +281,7 @@ paths:
         name: customer
         required: true
         schema:
-          $ref: '#/definitions/dto.CustomerDTO'
+          $ref: '#/definitions/dto.UpdateCustomerDTO'
       produces:
       - application/json
       responses:

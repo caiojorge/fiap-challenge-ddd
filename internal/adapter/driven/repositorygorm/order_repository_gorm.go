@@ -29,11 +29,20 @@ func (r *OrderRepositoryGorm) Create(ctx context.Context, entity *entity.Order) 
 	var model model.Order
 	copier.Copy(&model, entity)
 
+	fmt.Println(model)
+	fmt.Println(entity)
+
 	if *model.CustomerCPF == "" {
 		model.CustomerCPF = nil
 	}
 
-	return r.DB.Create(model).Error
+	err := r.DB.Create(model).Error
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+
+	return nil
 }
 
 func (r *OrderRepositoryGorm) Update(ctx context.Context, entity *entity.Order) error {
