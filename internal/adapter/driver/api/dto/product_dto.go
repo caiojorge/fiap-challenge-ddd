@@ -2,6 +2,13 @@ package dto
 
 import "github.com/caiojorge/fiap-challenge-ddd/internal/core/domain/entity"
 
+type CreateProductDTO struct {
+	Name        string  `json:"name"`
+	Description string  `json:"description"`
+	Category    string  `json:"category"`
+	Price       float64 `json:"price"`
+}
+
 type ProductDTO struct {
 	ID          string  `json:"id,omitempty"`
 	Name        string  `json:"name"`

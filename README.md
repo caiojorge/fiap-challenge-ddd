@@ -1,53 +1,78 @@
-# Project Name
+# Projeto para finalização do curso de DDD, das disciplinas de DDD, Docker e Arquitetura Hexagonal
 
-- Projeto para finalização do curso de DDD, das disciplinas de DDD, Docker e Arquitetura Hexagonal
+## Descrição
 
-- Estou usando a linguagem go para a resolução do exercício.
+A Kitchen Control API é uma aplicação para gerenciar clientes, produtos, pedidos e itens de pedidos. Esta API fornece endpoints para criar, buscar, atualizar e deletar registros.
 
-## Caso necessário, seguem os passos para instalação do SWAG
+## Tecnologias
 
-# SWAG no desenvolvimento apenas.
+- Go
+- GORM
+- MySQL
+- Gin Web Framework
+
+## Instalação
+
+### Pré-requisitos
+
+- wsl 2, macos ou linux
+- Go 1.22.1 ou superior
+- Docker
+- Git
+- make
+
+### Passos para Instalação
+
+1. Clone o repositório:
+    ```bash
+    git clone https://github.com/caiojorge/fiap-challenge-ddd.git
+    cd fiap-challenge-ddd
+    ```
+
+2. Instale as dependências:
+    ```bash
+    go mod tidy
+    ```
+
+3. Execute as migrações do banco de dados:
+    ```bash
+    make mysql (ou docker-compose up -d)
+    make run (ou go run cmd/kitchencontrol/main.go)
+    ```
+- O arquivo init-db esta conectado ao docker, e deve ser executado para criar o banco de dados caso não exista
+
+4. Execute os testes:
+    ```bash
+    make test (ou go test -v -cover ./...)
+    ```
+
+4. Inicie o servidor e acesse o swagger:
+    ```bash
+    make run (ou go run cmd/kitchencontrol/main.go)
+    http://localhost:8080/kitchencontrol/api/v1/docs/index.html
+    ```
+
+## Uso
+
+### Endpoints (acesso via swagger)
+- http://localhost:8080/kitchencontrol/api/v1/docs/index.html
+- Acessar o swagger, e toda documentação de uso está lá.
+
+
+## Documentação
+- O link para acesso ao miro será enviado aos professores via plataforma da fiap
+
+## Licença
+Este projeto está licenciado sob a Licença MIT - veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+
+## SWAG no desenvolvimento apenas.
 - Se o comando swag --version não funcionar, executar os passos abaixo:
-    Para gerar a documentação no padrão open api, será necessário instalar o swag
+    - Para gerar a documentação no padrão open api, será necessário instalar o swag
 
-go install github.com/swaggo/swag/cmd/swag@latest
-echo 'export PATH=$PATH:$(go env GOPATH)/bin' >> ~/.bashrc
-source ~/.bashrc
-swag --version
-
-
-## Como testar os endpoints?
-
- # Server
- - Executar o comando: docker-compose up -d
- - Executar o comando: go run cmd/kitchencontrol/main.go 
-
- # Acessar o swagger
- http://localhost:8080/kitchencontrol/api/v1/docs/index.html
-
- # Products
- - Testar a rota de products:
- - - http://localhost:8080/kitchencontrol/api/v1/docs/index.html#/Products/post_products
- - A api espera o seguinte body: 
- 
- {
-  "category": "almoço",
-  "description": "Massa com queijo",
-  "name": "Massa",
-  "price": 40
-} 
-
-
-## Design
-
-- Estou seguindo o padrão indicado nas aulas e tbm estou seguindo as boas práticas de nomenclatura do go.
-- Internal (o código fica protegido)
-- CMD (o main file de projetos go ficam aqui por padrão)
-- Estrutura de pastas seguindo o exemplo em TS que o professor disponibilizou
-
-## Deliverables
-
-- a. arquitetura hexagonal
-- b. api 
-    - 1. Cadastro do cliente (customer)
-    - 2. Identificação do cliente via CPF (no produto?)   
+    ```bash
+    go install github.com/swaggo/swag/cmd/swag@latest
+    echo 'export PATH=$PATH:$(go env GOPATH)/bin' >> ~/.bashrc
+    source ~/.bashrc
+    swag --version
+    ```
+    - no macos, ao invés de .bashrc, use .zhrc

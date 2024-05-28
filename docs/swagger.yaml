@@ -46,6 +46,17 @@ definitions:
       quantity:
         type: integer
     type: object
+  dto.CreateProductDTO:
+    properties:
+      category:
+        type: string
+      description:
+        type: string
+      name:
+        type: string
+      price:
+        type: number
+    type: object
   dto.CustomerDTO:
     properties:
       cpf:
@@ -467,7 +478,7 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/dto.ProductDTO'
+          $ref: '#/definitions/dto.CreateProductDTO'
       produces:
       - application/json
       responses:
@@ -554,7 +565,7 @@ paths:
         name: Product
         required: true
         schema:
-          $ref: '#/definitions/dto.ProductDTO'
+          $ref: '#/definitions/dto.CreateProductDTO'
       produces:
       - application/json
       responses:

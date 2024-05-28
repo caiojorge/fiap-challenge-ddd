@@ -33,7 +33,7 @@ func NewRegisterProductController(ctx context.Context, usecase portsusecase.Regi
 // @Tags Products
 // @Accept json
 // @Produce json
-// @Param        request   body     dto.ProductDTO  true  "cria novo produto"
+// @Param        request   body     dto.CreateProductDTO  true  "cria novo produto"
 // @Success 200 {object} dto.ProductDTO
 // @Failure 400 {object} string "invalid data"
 // @Failure 409 {object} string "product already exists"

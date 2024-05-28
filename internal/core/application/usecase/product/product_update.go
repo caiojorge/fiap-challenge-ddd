@@ -2,7 +2,7 @@ package usecase
 
 import (
 	"context"
-	"fmt"
+	"errors"
 
 	portsrepository "github.com/caiojorge/fiap-challenge-ddd/internal/core/application/ports/repository"
 	"github.com/caiojorge/fiap-challenge-ddd/internal/core/domain/entity"
@@ -21,10 +21,13 @@ func NewProductUpdate(repository portsrepository.ProductRepository) *ProductUpda
 // UpdateProduct atualiza um novo produto.
 func (cr *ProductUpdateUseCase) UpdateProduct(ctx context.Context, product entity.Product) error {
 
-	_, err := cr.repository.Find(ctx, product.GetID())
-	if err != nil && err.Error() != "product not found" {
-		fmt.Println("usecase: err: " + err.Error())
+	prd, err := cr.repository.Find(ctx, product.GetID())
+	if err != nil {
 		return err
+	}
+
+	if prd == nil {
+		return errors.New("product not found")
 	}
 
 	err = cr.repository.Update(ctx, &product)

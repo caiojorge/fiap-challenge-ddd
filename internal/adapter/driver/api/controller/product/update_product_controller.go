@@ -28,7 +28,7 @@ func NewUpdateProductController(ctx context.Context, usecase portsusecase.Update
 // @Accept  json
 // @Produce  json
 // @Param id path string true "Product id"
-// @Param Product body dto.ProductDTO true "Product data"
+// @Param Product body dto.CreateProductDTO true "Product data"
 // @Success 200 {object} dto.ProductDTO
 // @Failure 400 {object} string "Invalid data"
 // @Failure 404 {object} string "Product not found"
