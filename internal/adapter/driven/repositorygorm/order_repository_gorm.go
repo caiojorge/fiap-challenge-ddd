@@ -27,18 +27,19 @@ func NewOrderRepositoryGorm(db *gorm.DB, converter converter.Converter[entity.Or
 // Create creates a new product. It returns an error if something goes wrong.
 func (r *OrderRepositoryGorm) Create(ctx context.Context, entity *entity.Order) error {
 	var model model.Order
-	copier.Copy(&model, entity)
 
-	fmt.Println(model)
-	fmt.Println(entity)
+	err := copier.Copy(&model, entity)
+	if err != nil {
+		return err
+	}
 
 	if *model.CustomerCPF == "" {
 		model.CustomerCPF = nil
 	}
 
-	err := r.DB.Create(model).Error
+	err = r.DB.Create(model).Error
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println("gorm: " + err.Error())
 		return err
 	}
 

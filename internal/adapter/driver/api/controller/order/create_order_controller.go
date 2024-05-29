@@ -56,7 +56,8 @@ func (r *CreateOrderController) PostCreateOrder(c *gin.Context) {
 	}
 
 	// Nesse cenário, o ID informado será ignorado e um novo ID será gerado
-	fmt.Println("controller: Criando Order: " + entity.CustomerCPF + " - " + entity.ID)
+	fmt.Println("controller: Criando Order: " + entity.CustomerCPF)
+	fmt.Println("controller: Criando Order: " + dto.CustomerCPF)
 
 	err = r.usecase.CreateOrder(r.ctx, &entity)
 	if err != nil {

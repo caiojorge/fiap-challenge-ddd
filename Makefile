@@ -6,10 +6,13 @@ fiap-run:
 fiap-stop:
 	docker-compose down
 
-logs:
+fiap-logs:
 	docker-compose logs -f
 
 # Local
+build:
+	go build -o bin/kitchencontrol cmd/kitchencontrol/main.go
+	
 test:
 	go test -v -cover ./...
 

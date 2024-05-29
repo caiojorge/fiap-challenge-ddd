@@ -3,6 +3,7 @@ package usecase
 import (
 	"context"
 	"errors"
+	"fmt"
 
 	portsrepository "github.com/caiojorge/fiap-challenge-ddd/internal/core/application/ports/repository"
 	"github.com/caiojorge/fiap-challenge-ddd/internal/core/domain/entity"
@@ -31,6 +32,8 @@ func NewOrderCreate(orderRepository portsrepository.OrderRepository,
 
 // CreateOrder registra um novo pedido.
 func (cr *OrderCreateUseCase) CreateOrder(ctx context.Context, order *entity.Order) error {
+
+	fmt.Println("usecase: Criando Order: " + order.CustomerCPF)
 
 	// se o cpf for empty, indica que o cliente não quis se identificar, e isso esta ok, segundo as regras de negócio
 	if order.CustomerCPF != "" {
@@ -69,6 +72,8 @@ func (cr *OrderCreateUseCase) CreateOrder(ctx context.Context, order *entity.Ord
 		order.CustomerCPF = formatter.RemoveMaksFromCPF(order.CustomerCPF)
 	}
 
+	fmt.Println("usecase: Criando Order: Items: " + order.CustomerCPF)
+
 	// valida se os produtos informados existem
 	for _, item := range order.Items {
 		product, err := cr.productRepository.Find(ctx, item.ProductID)
@@ -84,12 +89,14 @@ func (cr *OrderCreateUseCase) CreateOrder(ctx context.Context, order *entity.Ord
 		item.UpdatePrice(product.Price)
 	}
 
+	fmt.Println("usecase: Criando Order: ConfirmOrder: " + order.CustomerCPF)
 	// toda regra de negócio para criar uma ordem confirmada
 	order.ConfirmOrder()
 
 	// cria a ordem e usa o cliente (novo ou existente) e o produto existente.
 	err := cr.orderRepository.Create(ctx, order)
 	if err != nil {
+		fmt.Println("usecase: repo create: " + err.Error())
 		return err
 	}
 
