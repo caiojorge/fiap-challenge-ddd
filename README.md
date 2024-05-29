@@ -36,8 +36,8 @@ A Kitchen Control API é uma aplicação para gerenciar clientes, produtos, pedi
 
 3. Execute as migrações do banco de dados:
     ```bash
-    make mysql (ou docker-compose up -d)
-    make run (ou go run cmd/kitchencontrol/main.go)
+    make fiap-run (ou docker-compose up -d)
+    
     ```
 - O arquivo init-db esta conectado ao docker, e deve ser executado para criar o banco de dados caso não exista
 
@@ -46,17 +46,32 @@ A Kitchen Control API é uma aplicação para gerenciar clientes, produtos, pedi
     make test (ou go test -v -cover ./...)
     ```
 
-4. Inicie o servidor e acesse o swagger:
+5. Inicie o servidor e acesse o swagger:
     ```bash
-    make run (ou go run cmd/kitchencontrol/main.go)
+    make fiap-run (ou docker-compose up -d)
     http://localhost:8080/kitchencontrol/api/v1/docs/index.html
+
+    ```
+6. Para desligar a aplicação:
+    ```bash
+    make fiap-stop (ou docker-compose up -d)
+    ``` 
+7. Para acessar o DB
+    ```bash
+    http://localhost:8282/
+    ```
+8. Para gerar CPFs
+    ```bash
+    https://www.geradordecpf.org/
     ```
 
 ## Uso
 
 ### Endpoints (acesso via swagger)
+
 - http://localhost:8080/kitchencontrol/api/v1/docs/index.html
 - Acessar o swagger, e toda documentação de uso está lá.
+- https://www.geradordecpf.org/
 
 
 ## Documentação
